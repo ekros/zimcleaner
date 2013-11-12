@@ -245,8 +245,13 @@ function(type, urn, params) {
 	{
 		var jsonObj = {BatchRequest:{_jsns:"urn:zimbra", onerror: 'continue'}};
 		request = jsonObj.BatchRequest;
+		// Heaviest messages
 		request.SearchRequest = {_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'sizeDesc'};
 		request.SearchRequest.query = 'smaller:10000MB';
+		// Oldest messages
+		request.SearchRequest = {_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'dateDesc'};
+		request.SearchRequest.query = 'before:01/01/2013';
+		// Get all folders
 		request.GetFolderRequest = {_jsns:"urn:zimbraMail", path: '/'};
 	}
 
