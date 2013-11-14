@@ -237,20 +237,22 @@ function(type, urn, params) {
 	}
 	else if (type == 'Search')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '5', types: 'conversation', sortBy: 'sizeDesc'}};
-		request = jsonObj.SearchRequest;
-		request.query = 'larger:1KB';
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'sizeDesc'}};
+		// request = jsonObj.SearchRequest;
+		// request.query = 'larger:1KB';
+		// Heaviest messages
+		jsonObj.SearchRequest.query = 'smaller:10000MB';		
 	}
 	else if (type == 'Batch')
 	{
 		var jsonObj = {BatchRequest:{_jsns:"urn:zimbra", onerror: 'continue'}};
 		request = jsonObj.BatchRequest;
 		// Heaviest messages
-		request.SearchRequest = {_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'sizeDesc'};
-		request.SearchRequest.query = 'smaller:10000MB';
+		// request.SearchRequest = {_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'sizeDesc'};
+		// request.SearchRequest.query = 'smaller:10000MB';
 		// Oldest messages
-		request.SearchRequest = {_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'dateDesc'};
-		request.SearchRequest.query = 'before:01/01/2013';
+		// request.SearchRequest = {_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'dateDesc'};
+		// request.SearchRequest.query = 'before:01/01/2013';
 		// Get all folders
 		request.GetFolderRequest = {_jsns:"urn:zimbraMail", path: '/'};
 	}
@@ -330,12 +332,13 @@ function(result) {
 	else if (result.getResponse().SearchResponse != null)
 	{
 		response = result.getResponse().SearchResponse;
-		tops = "";
+
+		var suggestions = "";
 		for (var i in response.c)
 		{
-			tops += "<input id=" + response.c[i].m[0]['id'] + " type='checkbox'>" + response.c[i].m[0]['id'] + "</input>&nbsp" + response.c[i].su + " " + parseInt(response.c[i].m[0]['s']) + "<br>";
+			suggestions += "<input id=" + response.c[i].m[0]['id'] + " type='checkbox'>" + response.c[i].m[0]['id'] + "</input>&nbsp" + response.c[i].su + " " + parseInt(response.c[i].m[0]['s']) + "<br>";
 		}
-		// app.setContent(content);
+		$("#suggestions").html("<strong>Suggestions</strong><br>" + suggestions);
 	}
 	
 	else if (result.getResponse().BatchResponse != null)
@@ -451,11 +454,11 @@ function(result) {
 		var other_per = (other_size/total_size)*100;
 		// var used_per = (total_size/mailbox_size)*100;
 
-		var size_top = "<br><br>Heaviest messages<br>";
-		for (var i in response.SearchResponse[0].c)
-		{
-			size_top += "<input id=" + response.SearchResponse[0].c[i].m[0]['id'] + " type='checkbox'>" + response.SearchResponse[0].c[i].m[0]['id'] + "</input>&nbsp" + response.SearchResponse[0].c[i].su + " " + response.SearchResponse[0].c[i].m[0]['s'] + "<br>";
-		}
+		// var suggestions = "<br><br>Heaviest messages<br>";
+		// for (var i in response.SearchResponse[0].c)
+		// {
+		// 	suggestions += "<input id=" + response.SearchResponse[0].c[i].m[0]['id'] + " type='checkbox'>" + response.SearchResponse[0].c[i].m[0]['id'] + "</input>&nbsp" + response.SearchResponse[0].c[i].su + " " + response.SearchResponse[0].c[i].m[0]['s'] + "<br>";
+		// }
 
 		// var labels1 = "<strong>Total space</strong> | <span style='color: green'>Used space " + used_per.toFixed(1) + "%</span>";
 		// var bars1 = "<div title='inbox' style='float: left; width: " + used_per + "%; height: 20px; background-color: green; border: 0px'></div>" + 
@@ -511,11 +514,12 @@ function(result) {
 		// other space usage
 		other_space_details = getSpaceDetails("Other folders", other_folder_names, other_size);
 
+		// SET CONTENT
 		app.setContent("<div style='background-color: lightgray; border: 1px;'>" + 
-			labels2 + "<br>" + bars2 + "<br><br>" + space_details + 
-			"</div><br><br><br><br>" + 
+			labels2 + "<br>" + bars2 + "<br><br>" + 
+			space_details +	"</div><br><br><br><br>" + 
 			"<div style='background-color: lightgray; border: 1px;'><br>" + clean_list + "</div><br><br>" + 
-			"<div style='background-color: lightgray; border: 1px;'><strong>Suggestions</strong><br>" +  size_top + "</div>");
+			"<div id='suggestions' style='background-color: lightgray; border: 1px;'></div>");
 
 		// effect
 		firstBarEffect();
@@ -526,6 +530,8 @@ function(result) {
 			$("#z_shell").css("overflow-y", "hidden");
 		});
 
+		// send search requests
+		this._submitSOAPRequestJSON('Search', 'zimbra');
 	}
 };
 
