@@ -235,13 +235,20 @@ function(type, urn, params) {
 		request = jsonObj.GetMailboxMetadataRequest;
 		request.meta = params;
 	}
-	else if (type == 'Search')
+	else if (type == 'SearchHeaviest')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'sizeDesc'}};
-		// request = jsonObj.SearchRequest;
-		// request.query = 'larger:1KB';
-		// Heaviest messages
-		jsonObj.SearchRequest.query = 'smaller:10000MB';		
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '20', types: 'conversation', sortBy: 'sizeDesc'}};
+		jsonObj.SearchRequest.query = 'smaller:99999MB';		
+	}
+	else if (type == 'SearchOldest')
+	{
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'dateDesc'}};
+		jsonObj.SearchRequest.query = 'before:01/01/2013';		
+	}	
+	else if (type == 'SearchUnread')
+	{
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'dateAsc'}};
+		jsonObj.SearchRequest.query = 'is:unread';
 	}
 	else if (type == 'Batch')
 	{
@@ -334,11 +341,13 @@ function(result) {
 		response = result.getResponse().SearchResponse;
 
 		var suggestions = "";
+		var total_result_size = 0;
 		for (var i in response.c)
 		{
-			suggestions += "<input id=" + response.c[i].m[0]['id'] + " type='checkbox'>" + response.c[i].m[0]['id'] + "</input>&nbsp" + response.c[i].su + " " + parseInt(response.c[i].m[0]['s']) + "<br>";
+			suggestions += "<input id=" + response.c[i]['id'] + " type='checkbox'>" + response.c[i]['id'] + "</input>&nbsp" + response.c[i].su + " " + parseInt(response.c[i].sf) + "<br>";
+			total_result_size += parseInt(response.c[i].sf);
 		}
-		$("#suggestions").html("<strong>Suggestions</strong><br>" + suggestions);
+		$("#suggestions").append("<strong>Suggestions</strong><br>" + suggestions + "<br>Total size: " + total_result_size + "<br>");
 	}
 	
 	else if (result.getResponse().BatchResponse != null)
@@ -514,12 +523,32 @@ function(result) {
 		// other space usage
 		other_space_details = getSpaceDetails("Other folders", other_folder_names, other_size);
 
+		// INITIAL DATA
+		var initialData = "";
+
+		if (trash_per >= 10)
+		{
+			initialData += "Parece que tienes la papelera bastante llena.<br>";
+		}
+		if (drafts_per >= 10)
+		{
+			initialData += "Parece que tienes muchos borradores.<br>";
+		}
+		if (junk_per >= 10)
+		{
+			initialData += "Parece que tienes muchos correos basura.<br>";
+		}
+		if (briefcase_per >= 10)
+		{
+			initialData += "Parece que tu maletín ocupa mucho espacio.<br>";
+		}
+
 		// SET CONTENT
 		app.setContent("<div style='background-color: lightgray; border: 1px;'>" + 
 			labels2 + "<br>" + bars2 + "<br><br>" + 
 			space_details +	"</div><br><br><br><br>" + 
 			"<div style='background-color: lightgray; border: 1px;'><br>" + clean_list + "</div><br><br>" + 
-			"<div id='suggestions' style='background-color: lightgray; border: 1px;'></div>");
+			"<div id='suggestions' style='background-color: lightgray; border: 1px;'>" + initialData + "</div>");
 
 		// effect
 		firstBarEffect();
@@ -531,7 +560,9 @@ function(result) {
 		});
 
 		// send search requests
-		this._submitSOAPRequestJSON('Search', 'zimbra');
+		this._submitSOAPRequestJSON('SearchHeaviest', 'zimbra');
+		this._submitSOAPRequestJSON('SearchOldest', 'zimbra');
+		this._submitSOAPRequestJSON('SearchUnread', 'zimbra');
 	}
 };
 
