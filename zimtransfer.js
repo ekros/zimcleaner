@@ -247,7 +247,7 @@ function(type, urn, params) {
 	}	
 	else if (type == 'SearchUnread')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'dateAsc'}};
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '9999', types: 'conversation', sortBy: 'dateAsc'}};
 		jsonObj.SearchRequest.query = 'is:unread';
 	}
 	else if (type == 'Batch')
@@ -340,14 +340,42 @@ function(result) {
 	{
 		response = result.getResponse().SearchResponse;
 
-		var suggestions = "";
-		var total_result_size = 0;
-		for (var i in response.c)
+		var title = "";
+		var body = "";
+		// var condition = false;
+		// TODO this is workaround to distinguish between searches
+		if (response.sortBy == 'sizeDesc')
 		{
-			suggestions += "<input id=" + response.c[i]['id'] + " type='checkbox'>" + response.c[i]['id'] + "</input>&nbsp" + response.c[i].su + " " + parseInt(response.c[i].sf) + "<br>";
-			total_result_size += parseInt(response.c[i].sf);
+			title = "Heaviest messages";
 		}
-		$("#suggestions").append("<strong>Suggestions</strong><br>" + suggestions + "<br>Total size: " + total_result_size + "<br>");
+		else if (response.sortBy == 'dateDesc')
+		{
+			title = "Oldest messages";
+		}
+		else if (response.sortBy == 'dateAsc')
+		{
+			title = "Unread messages";
+			// title += response.c.length;
+			// check condition
+			if (response.c.length > 100) {
+				// action
+				body = "<div class='alert'><span class='icon-warning-sign'></span>You have too many unread messages</div>Solution: See unread messages<br>You can use filters in order to automatically deal with incoming messages. See Preferences > Filters";
+				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
+			}
+		}
+
+		// var suggestions = "";
+		// var total_result_size = 0;
+		// for (var i in response.c)
+		// {
+		// 	suggestions += "<input id=" + response.c[i]['id'] + " type='checkbox'>" + response.c[i]['id'] + "</input>&nbsp" + response.c[i].su + " " + parseInt(response.c[i].sf) + "<br>";
+		// 	total_result_size += parseInt(response.c[i].sf);
+		// 	if (i == 10)
+		// 	{
+		// 		break;
+		// 	}
+		// }
+		// $("#suggestions").append("<strong>" + title + "</strong><br>" + suggestions + "<br>Total size: " + total_result_size + "<br>");
 	}
 	
 	else if (result.getResponse().BatchResponse != null)
@@ -524,7 +552,7 @@ function(result) {
 		other_space_details = getSpaceDetails("Other folders", other_folder_names, other_size);
 
 		// INITIAL DATA
-		var initialData = "";
+		var initialData = "<strong>Suggestions</strong><br>";
 
 		if (trash_per >= 10)
 		{
@@ -553,13 +581,13 @@ function(result) {
 		// effect
 		firstBarEffect();
 
-		// scrollbar workaround
+		// scrollbar workaroundCannot assign requested address
 		$("#z_shell").css("overflow-y", "auto");
 		$("#skin_tr_top").click(function(){
 			$("#z_shell").css("overflow-y", "hidden");
 		});
 
-		// send search requests
+		// send search requestsCannot assign requested address
 		this._submitSOAPRequestJSON('SearchHeaviest', 'zimbra');
 		this._submitSOAPRequestJSON('SearchOldest', 'zimbra');
 		this._submitSOAPRequestJSON('SearchUnread', 'zimbra');
