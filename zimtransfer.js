@@ -242,12 +242,13 @@ function(type, urn, params) {
 	}
 	else if (type == 'SearchOldest')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '10', types: 'conversation', sortBy: 'dateDesc'}};
-		jsonObj.SearchRequest.query = 'before:01/01/2013';		
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '500', types: 'conversation', sortBy: 'dateDesc'}};
+		var today = new Date();
+		jsonObj.SearchRequest.query = 'before:' + today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
 	}	
 	else if (type == 'SearchUnread')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '9999', types: 'conversation', sortBy: 'dateAsc'}};
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '101', types: 'conversation', sortBy: 'dateAsc'}};
 		jsonObj.SearchRequest.query = 'is:unread';
 	}
 	else if (type == 'Batch')
@@ -291,6 +292,33 @@ var inboxRequest = function() {
 
 	return appCtxt.getAppController().sendRequest(params);
 };
+
+function getResponseSize(response)
+{
+	var result_size = 0;
+
+	//called with every property and it's value
+	function process(key,value) {
+	    if (key == 's')
+	    {
+	    	result_size += value;
+	    }
+	}
+
+	function traverse(o,func) {
+	    for (var i in o) {
+	        func.apply(this,[i,o[i]]);  
+	        if (typeof(o[i])=="object") {
+	            //going on step down in the object tree!!
+	            traverse(o[i],func);
+	        }
+	    }
+	}
+
+	//that's all... no magic, no bloated framework
+	traverse(response, process);
+	return result_size;
+}
 
 /**
  * Handles the SOAP response.
@@ -347,10 +375,43 @@ function(result) {
 		if (response.sortBy == 'sizeDesc')
 		{
 			title = "Heaviest messages";
+			// check condition
+			heaviest_size = getResponseSize(response);
+			// for (i in response.c)
+			// {
+			// 	heaviest_size += parseInt(response.c[i].sf);
+			// }
+			console.log("heaviest size: " + heaviest_size);
+			console.log("total size: " + total_size);
+			console.log("percentage: " + (heaviest_size/total_size));
+
+			var percentage = heaviest_size/total_size;
+			// trigger condition: 20 heaviest messages take up more than 7% of space
+			if (percentage > 0.07)
+			{
+				body = "<div class='alert'><span class='icon-warning-sign'></span>Your heavy messages take up too much space</div>";
+				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
+			}
 		}
 		else if (response.sortBy == 'dateDesc')
 		{
 			title = "Oldest messages";
+			// check condition
+			oldest_size = getResponseSize(response);
+			// for (i in response.c)
+			// {
+			// 	oldest_size += parseInt(response.c[i].sf);
+			// }
+			console.log("oldest size: " + oldest_size);
+			console.log("total size: " + total_size);
+			console.log("percentage: " + (oldest_size/total_size));
+			var percentage = oldest_size/total_size;
+			// trigger condition: messages oldest than 1 year take up more than 50% of space
+			if (percentage > 0.5)
+			{
+				body = "<div class='alert'><span class='icon-warning-sign'></span>Your old messages take up too much space</div>";
+				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
+			}			
 		}
 		else if (response.sortBy == 'dateAsc')
 		{
