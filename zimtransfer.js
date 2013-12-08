@@ -71,7 +71,16 @@ function() {
 	$(document).on('click', '#other', function(){
 		$("#space_details").html(other_space_details);
 		secondBarEffect();
-	});	
+	});
+
+	$(document).on('click', '#show_heaviest_btn', function(){
+		// var getHtml = appCtxt.get(ZmSetting.VIEW_AS_HTML);
+	var _types = new AjxVector();
+	_types.add("CONV");
+	appCtxt.getSearchController().search({query: 'smaller:99999MB', sortBy: 'sizeDesc', userText: false, limit: 20,  offset: 0, types:_types, noRender:false});
+		// appCtxt.getSearchController().search('prueba', 'smaller:99999MB', null, {types: _types}, 'sizeDesc', 0, 20, null, false);
+		// appCtxt.getSearchController().toSearch('jllopis@acb.es');
+	});
 };
 
 /**
@@ -389,7 +398,7 @@ function(result) {
 			// trigger condition: 20 heaviest messages take up more than 7% of space
 			if (percentage > 0.07)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>Your heavy messages take up too much space</div>";
+				body = "<div class='alert'><span class='icon-warning-sign'></span>Your heavy messages take up too much space&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>Show</button></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
@@ -581,17 +590,17 @@ function(result) {
 			"<tr>" + 
 				"<td>Trash</td>" + 
 				"<td>" + trash_size + "</td>" + 
-				"<td><button class='btn btn-mini btn-warning' onClick=empty_trash()>Clean</button></td>" + 
+				"<td><button class='btn btn-mini' onClick=empty_trash()>Clean</button></td>" + 
 			"</tr>" + 
 			"<tr>" + 
 				"<td>Drafts</td>" + 
 				"<td>" + drafts_size + "</td>" + 
-				"<td><button class='btn btn-mini btn-warning' onClick=empty_drafts()>Clean</button></td>" + 
+				"<td><button class='btn btn-mini' onClick=empty_drafts()>Clean</button></td>" + 
 			"</tr>" + 
 			"<tr>" + 
 				"<td>Briefcase</td>" + 
 				"<td>" + briefcase_size + "</td>" + 
-				"<td><button class='btn btn-mini btn-warning' onClick=empty_briefcase()>Clean</button></td>" + 
+				"<td><button class='btn btn-mini' onClick=empty_briefcase()>Clean</button></td>" + 
 			"</tr>" + 
 		"</table>";
 		
