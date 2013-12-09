@@ -75,11 +75,21 @@ function() {
 
 	$(document).on('click', '#show_heaviest_btn', function(){
 		// var getHtml = appCtxt.get(ZmSetting.VIEW_AS_HTML);
-	var _types = new AjxVector();
-	_types.add("CONV");
-	appCtxt.getSearchController().search({query: 'smaller:99999MB', sortBy: 'sizeDesc', userText: false, limit: 20,  offset: 0, types:_types, noRender:false});
+		var _types = new AjxVector();
+		_types.add("CONV");
+		appCtxt.getSearchController().search({userInitiated: true, query: 'smaller:99999MB', sortBy: 'sizeDesc', limit: 20,  offset: 0, types:_types});
 		// appCtxt.getSearchController().search('prueba', 'smaller:99999MB', null, {types: _types}, 'sizeDesc', 0, 20, null, false);
 		// appCtxt.getSearchController().toSearch('jllopis@acb.es');
+	});
+
+	$(document).on('click', '#show_oldest_btn', function(){
+		// var getHtml = appCtxt.get(ZmSetting.VIEW_AS_HTML);
+		var _types = new AjxVector();
+		_types.add("CONV");
+		var today = new Date();
+		var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+		appCtxt.getSearchController().search({userInitiated: true, query: 'before:' + aYearAgo.toLocaleDateString(), sortBy: 'dateAsc', limit: 20,  offset: 0, types:_types});
+		// var aYearAgo = today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
 	});
 };
 
@@ -253,7 +263,8 @@ function(type, urn, params) {
 	{
 		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '500', types: 'conversation', sortBy: 'dateDesc'}};
 		var today = new Date();
-		jsonObj.SearchRequest.query = 'before:' + today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
+		var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+		jsonObj.SearchRequest.query = 'before:' + aYearAgo.toLocaleDateString();
 	}	
 	else if (type == 'SearchUnread')
 	{
@@ -416,9 +427,10 @@ function(result) {
 			console.log("percentage: " + (oldest_size/total_size));
 			var percentage = oldest_size/total_size;
 			// trigger condition: messages oldest than 1 year take up more than 50% of space
-			if (percentage > 0.5)
+			// if (percentage > 0.5)
+			if (true)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>Your old messages take up too much space</div>";
+				body = "<div class='alert'><span class='icon-warning-sign'></span>Your old messages take up too much space&nbsp<button id='show_oldest_btn' class='btn btn-mini'>Show</button></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}			
 		}
