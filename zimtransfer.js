@@ -91,6 +91,28 @@ function() {
 		appCtxt.getSearchController().search({userInitiated: true, query: 'before:' + aYearAgo.toLocaleDateString(), sortBy: 'dateAsc', limit: 20,  offset: 0, types:_types});
 		// var aYearAgo = today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
 	});
+
+	$(document).on('click', '#export_oldest_btn', function(){
+		var today = new Date();
+		var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+		
+		// this works but freezes the webUI		
+		// location.href = "https://localhost/service/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString();
+
+		// this is the request sent by the Zimbra UI when exporting mailbox
+		// https://localhost/home/admin%40eros-ferrari.mipiso-badalona.com/Sent%2FDatabac?fmt=tgz&types=message%2Cconversation&filename=Databac-2013-12-14-010954&emptyname=Ning%C3%BAn+dato+para+exportar&charset=UTF-8
+
+		// this is a try to use the JS api
+		// appCtxt.getImportExportController().exportData({ type: 'TYPE_ZIP', filename: 'test', searchFilter: 'in:inbox' });
+
+		// this doesn't work..
+		// $.ajax({
+		// 	url: "https://localhost/service/home/admin/?fmt=zip&query=before:01/06/2010",
+		// 	Content-Disposition: "attachment";
+		// }).done(function() {
+		// 	console.log("Descarga iniciada...");
+		// });		
+	});
 };
 
 /**
@@ -409,7 +431,7 @@ function(result) {
 			// trigger condition: 20 heaviest messages take up more than 7% of space
 			if (percentage > 0.07)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>Your heavy messages take up too much space&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>Show</button></div>";
+				body = "<div class='alert'><span class='icon-warning-sign'></span>Your heavy messages take up too much space&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>Show</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>Export and tag</button><span class='icon icon-question-sign' title='Export and tag messages..'></span></div>"; // TODO more descriptive title
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
@@ -430,7 +452,7 @@ function(result) {
 			// if (percentage > 0.5)
 			if (true)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>Your old messages take up too much space&nbsp<button id='show_oldest_btn' class='btn btn-mini'>Show</button></div>";
+				body = "<div class='alert'><span class='icon-warning-sign'></span>Your old messages take up too much space&nbsp<button id='show_oldest_btn' class='btn btn-mini'>Show</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>Export and tag</button><span class='icon icon-question-sign' title='Export and tag messages...	'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}			
 		}
