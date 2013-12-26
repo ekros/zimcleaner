@@ -97,18 +97,29 @@ function() {
 		var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
 		
 		// this works but freezes the webUI		
-		// location.href = "https://localhost/service/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString();
+		// location.href = "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString();
+		// location.reload();
 
 		// this is the request sent by the Zimbra UI when exporting mailbox
-		// https://localhost/home/admin%40eros-ferrari.mipiso-badalona.com/Sent%2FDatabac?fmt=tgz&types=message%2Cconversation&filename=Databac-2013-12-14-010954&emptyname=Ning%C3%BAn+dato+para+exportar&charset=UTF-8
+		// location.href = "https://localhost/home/admin%40eros-ferrari.mipiso-badalona.com/Sent%2FDatabac?fmt=tgz&types=message%2Cconversation&filename=Databac-2013-12-14-010954&emptyname=Ning%C3%BAn+dato+para+exportar&charset=UTF-8"
 
 		// this is a try to use the JS api
-		// appCtxt.getImportExportController().exportData({ type: 'TYPE_ZIP', filename: 'test', searchFilter: 'in:inbox' });
+		// appCtxt.getImportExportController().exportData({ type: 'TYPE_TGZ', filename: 'test', searchFilter: 'in:inbox/Datos' });
+
+		// hidden iframe triggers download
+		$(".DwtComposite").append("<iframe id='downloadFrame' style='display:none'></iframe>");
+		var iframe = document.getElementById("downloadFrame");
+		iframe.src = "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString();
+		// Create tag
+		var tag = new ZmTag({ color: 'black', name: 'test-oldest' });
+
+		// iframe.src = "https://localhost/home/admin%40eros-ferrari.mipiso-badalona.com/Sent%2FDatabac?fmt=tgz&types=message%2Cconversation&filename=Databac-2013-12-14-010954&emptyname=Ning%C3%BAn+dato+para+exportar&charset=UTF-8";
 
 		// this doesn't work..
 		// $.ajax({
-		// 	url: "https://localhost/service/home/admin/?fmt=zip&query=before:01/06/2010",
-		// 	Content-Disposition: "attachment";
+		// 	url: "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString(),
+		// 	// contentType: "application/octet-stream"
+		// 	contentDisposition: "attachment"
 		// }).done(function() {
 		// 	console.log("Descarga iniciada...");
 		// });		
