@@ -13,6 +13,9 @@
  * ***** END LICENSE BLOCK *****
  */
 
+// globals
+oldestIds = new Array(); // comma separated ids of oldest messages
+
 /**
  * Defines the Zimlet handler class.
  *   
@@ -86,43 +89,21 @@ function() {
 		// var getHtml = appCtxt.get(ZmSetting.VIEW_AS_HTML);
 		var _types = new AjxVector();
 		_types.add("CONV");
-		var today = new Date();
-		var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-		appCtxt.getSearchController().search({userInitiated: true, query: 'before:' + aYearAgo.toLocaleDateString(), sortBy: 'dateAsc', limit: 20,  offset: 0, types:_types});
+		var aYearAgo = getAYearAgo();
+		appCtxt.getSearchController().search({userInitiated: true, query: 'before:' + aYearAgo.toLocaleDateString(), sortBy: 'dateAsc', types:_types});
 		// var aYearAgo = today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
 	});
 
 	$(document).on('click', '#export_oldest_btn', function(){
-		var today = new Date();
-		var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
-		
-		// this works but freezes the webUI		
-		// location.href = "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString();
-		// location.reload();
-
-		// this is the request sent by the Zimbra UI when exporting mailbox
-		// location.href = "https://localhost/home/admin%40eros-ferrari.mipiso-badalona.com/Sent%2FDatabac?fmt=tgz&types=message%2Cconversation&filename=Databac-2013-12-14-010954&emptyname=Ning%C3%BAn+dato+para+exportar&charset=UTF-8"
-
-		// this is a try to use the JS api
-		// appCtxt.getImportExportController().exportData({ type: 'TYPE_TGZ', filename: 'test', searchFilter: 'in:inbox/Datos' });
-
+		var aYearAgo = getAYearAgo();
 		// hidden iframe triggers download
 		$(".DwtComposite").append("<iframe id='downloadFrame' style='display:none'></iframe>");
 		var iframe = document.getElementById("downloadFrame");
 		iframe.src = "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString();
 		// Create tag
-		var tag = new ZmTag({ color: 'black', name: 'test-oldest' });
-
-		// iframe.src = "https://localhost/home/admin%40eros-ferrari.mipiso-badalona.com/Sent%2FDatabac?fmt=tgz&types=message%2Cconversation&filename=Databac-2013-12-14-010954&emptyname=Ning%C3%BAn+dato+para+exportar&charset=UTF-8";
-
-		// this doesn't work..
-		// $.ajax({
-		// 	url: "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString(),
-		// 	// contentType: "application/octet-stream"
-		// 	contentDisposition: "attachment"
-		// }).done(function() {
-		// 	console.log("Descarga iniciada...");
-		// });		
+		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', 'Before-' + aYearAgo.toLocaleDateString() + 
+			'-' + aYearAgo.getHours() + aYearAgo.getMinutes() + aYearAgo.getSeconds());
+		console.log(oldestIds);
 	});
 };
 
@@ -294,15 +275,25 @@ function(type, urn, params) {
 	}
 	else if (type == 'SearchOldest')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '500', types: 'conversation', sortBy: 'dateDesc'}};
-		var today = new Date();
-		var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '0', types: 'conversation', sortBy: 'dateDesc'}};
+		var aYearAgo = getAYearAgo();
+		console.log("AYEARAGO: " + aYearAgo);
 		jsonObj.SearchRequest.query = 'before:' + aYearAgo.toLocaleDateString();
 	}	
 	else if (type == 'SearchUnread')
 	{
 		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '101', types: 'conversation', sortBy: 'dateAsc'}};
 		jsonObj.SearchRequest.query = 'is:unread';
+	}
+	else if (type == "CreateTag")
+	{
+		var jsonObj = {CreateTagRequest:{_jsns:"urn:zimbraMail", tag: {color: Math.floor(Math.random()*7), name: params}}};
+	}
+	else if (type == "TagConv")
+	{
+		// TODO DIVIDIR EL ARRAY EN GRUPOS DE 1000 Y LANZARLOS A PLAZOS!! (a mano, pues no encuentro la manera de hacerlo con la API)
+		console.log("oldestIds: " + oldestIds.toString());
+		var jsonObj = {ConvActionRequest:{_jsns:"urn:zimbraMail", action: {id: oldestIds.toString(), op: "tag", tn: params['name']}}};
 	}
 	else if (type == 'Batch')
 	{
@@ -371,6 +362,28 @@ function getResponseSize(response)
 	//that's all... no magic, no bloated framework
 	traverse(response, process);
 	return result_size;
+}
+
+function getResponseIds(response)
+{
+	var idArray = new Array();
+	var convArray = response.c;
+
+	// iterate over conversations
+	for (var i in convArray)
+	{
+    	idArray.push(convArray[i].id);
+	}
+
+	return idArray;
+}
+
+// returns the date a year ago
+function getAYearAgo()
+{
+	var today = new Date();
+	var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
+	return aYearAgo;
 }
 
 /**
@@ -459,6 +472,7 @@ function(result) {
 			console.log("total size: " + total_size);
 			console.log("percentage: " + (oldest_size/total_size));
 			var percentage = oldest_size/total_size;
+			oldestIds = getResponseIds(response);
 			// trigger condition: messages oldest than 1 year take up more than 50% of space
 			// if (percentage > 0.5)
 			if (true)
@@ -492,7 +506,15 @@ function(result) {
 		// }
 		// $("#suggestions").append("<strong>" + title + "</strong><br>" + suggestions + "<br>Total size: " + total_result_size + "<br>");
 	}
-	
+	else if (result.getResponse().CreateTagResponse != null)
+	{
+		// console.log("respuesta createtag");
+		// console.log(result.getResponse().CreateTagResponse);
+		var ctr = result.getResponse().CreateTagResponse;
+		var ctr_id = ctr.tag[0].id;
+		var ctr_name = ctr.tag[0].name;
+		this._submitSOAPRequestJSON('TagConv', 'zimbraMail', {id: ctr_id, name: ctr_name});
+	}
 	else if (result.getResponse().BatchResponse != null)
 	{
 		// do something with response (in JSON format)
