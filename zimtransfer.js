@@ -14,7 +14,9 @@
  */
 
 // globals
-oldestIds = new Array(); // comma separated ids of oldest messages
+tagIds = new Array(); // comma separated ids of oldest messages
+tagName = "";
+// tagChunkIndex = 0; // index which controls the tagging process (after array chunking)
 
 /**
  * Defines the Zimlet handler class.
@@ -90,20 +92,29 @@ function() {
 		var _types = new AjxVector();
 		_types.add("CONV");
 		var aYearAgo = getAYearAgo();
-		appCtxt.getSearchController().search({userInitiated: true, query: 'before:' + aYearAgo.toLocaleDateString(), sortBy: 'dateAsc', types:_types});
+		// TODO We need a way to limit the number of results returned by the search.. a limit param doesn't work...
+		appCtxt.getSearchController().search({userInitiated: true, query: 'after:01/01/1900', sortBy: 'dateAsc', types:_types});
 		// var aYearAgo = today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
 	});
 
-	$(document).on('click', '#export_oldest_btn', function(){
-		var aYearAgo = getAYearAgo();
-		// hidden iframe triggers download
-		$(".DwtComposite").append("<iframe id='downloadFrame' style='display:none'></iframe>");
-		var iframe = document.getElementById("downloadFrame");
-		iframe.src = "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=before:" + aYearAgo.toLocaleDateString();
+	$(document).on('click', '#export_heaviest_btn', function(){
+		// var aYearAgo = getAYearAgo();
+		var today = new Date();
+		tagName = 'heaviest-messages-' + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
+		console.log("tagName: " + tagName);
 		// Create tag
-		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', 'Before-' + aYearAgo.toLocaleDateString() + 
-			'-' + aYearAgo.getHours() + aYearAgo.getMinutes() + aYearAgo.getSeconds());
-		console.log(oldestIds);
+		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
+		// console.log(tagIds);
+	});
+
+	$(document).on('click', '#export_oldest_btn', function(){
+		// var aYearAgo = getAYearAgo();
+		var today = new Date();
+		tagName = 'oldest-messages-' + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
+		console.log("tagName: " + tagName);
+		// Create tag
+		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
+		console.log(tagIds);
 	});
 };
 
@@ -275,14 +286,14 @@ function(type, urn, params) {
 	}
 	else if (type == 'SearchOldest')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '0', types: 'conversation', sortBy: 'dateDesc'}};
-		var aYearAgo = getAYearAgo();
-		console.log("AYEARAGO: " + aYearAgo);
-		jsonObj.SearchRequest.query = 'before:' + aYearAgo.toLocaleDateString();
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '1000', types: 'conversation', sortBy: 'dateAsc'}};
+		// var aYearAgo = getAYearAgo();
+		// console.log("AYEARAGO: " + aYearAgo);
+		jsonObj.SearchRequest.query = 'after:01/01/1900';
 	}	
 	else if (type == 'SearchUnread')
 	{
-		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '101', types: 'conversation', sortBy: 'dateAsc'}};
+		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '101', types: 'conversation', sortBy: 'dateDesc'}};
 		jsonObj.SearchRequest.query = 'is:unread';
 	}
 	else if (type == "CreateTag")
@@ -291,9 +302,12 @@ function(type, urn, params) {
 	}
 	else if (type == "TagConv")
 	{
-		// TODO DIVIDIR EL ARRAY EN GRUPOS DE 1000 Y LANZARLOS A PLAZOS!! (a mano, pues no encuentro la manera de hacerlo con la API)
-		console.log("oldestIds: " + oldestIds.toString());
-		var jsonObj = {ConvActionRequest:{_jsns:"urn:zimbraMail", action: {id: oldestIds.toString(), op: "tag", tn: params['name']}}};
+		// console.log("tagIds: " + tagIds.toString());
+		// this.tagAction(true, tagIds[0], params['name']);
+		// var current_chunk = tagIds.slice(tagChunkIndex, tagChunkIndex + 100);
+		// tagChunkIndex++;
+		var jsonObj = {ConvActionRequest:{_jsns:"urn:zimbraMail", action: {id: tagIds.toString(), op: "tag", tn: params['name']}}};
+		// TODO you can use ItemActionRequest to tag conversations and messages or files in the briefcase
 	}
 	else if (type == 'Batch')
 	{
@@ -386,6 +400,31 @@ function getAYearAgo()
 	return aYearAgo;
 }
 
+// tag a list of conversations given their ids
+// zimtransfer_HandlerObject.prototype.tagAction =
+// function (doTag, msgOrConvObj, tagName) {
+//         var tagObj = appCtxt.getActiveAccount().trees.TAG.getByName(tagName);
+//         if(!tagObj)
+//             return;
+//         var tagId = tagObj.id;
+// 	var axnType = "";
+// 	if (doTag)
+// 		axnType = "tag"; //tag
+// 	else
+// 		axnType = "!tag"; //untag
+
+// 	var soapCmd = ZmItem.SOAP_CMD[msgOrConvObj.type] + "Request";
+// 	var itemActionRequest = {};
+// 	itemActionRequest[soapCmd] = {_jsns:"urn:zimbraMail"};
+// 	var request = itemActionRequest[soapCmd];
+// 	var action = request.action = {};
+// 	action.id = msgOrConvObj.id;
+// 	action.op = axnType;
+// 	action.tag = tagId;
+// 	var params = {asyncMode: true, callback: null, jsonObj:itemActionRequest};
+// 	appCtxt.getAppController().sendRequest(params);
+// };
+
 /**
  * Handles the SOAP response.
  * 
@@ -450,6 +489,8 @@ function(result) {
 			console.log("heaviest size: " + heaviest_size);
 			console.log("total size: " + total_size);
 			console.log("percentage: " + (heaviest_size/total_size));
+			tagIds = getResponseIds(response);
+			console.log("tagIds: " + tagIds);
 
 			var percentage = heaviest_size/total_size;
 			// trigger condition: 20 heaviest messages take up more than 7% of space
@@ -459,7 +500,7 @@ function(result) {
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
-		else if (response.sortBy == 'dateDesc')
+		else if (response.sortBy == 'dateAsc')
 		{
 			title = "Oldest messages";
 			// check condition
@@ -472,8 +513,10 @@ function(result) {
 			console.log("total size: " + total_size);
 			console.log("percentage: " + (oldest_size/total_size));
 			var percentage = oldest_size/total_size;
-			oldestIds = getResponseIds(response);
-			// trigger condition: messages oldest than 1 year take up more than 50% of space
+			tagIds = getResponseIds(response);
+			console.log("tagIds: " + tagIds);
+			// trigger condition: 1000 oldest messages take up more than 50% of space
+			// TODO add the following extra condition: these messages must be older than a year...
 			// if (percentage > 0.5)
 			if (true)
 			{
@@ -481,7 +524,7 @@ function(result) {
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}			
 		}
-		else if (response.sortBy == 'dateAsc')
+		else if (response.sortBy == 'dateDesc')
 		{
 			title = "Unread messages";
 			// title += response.c.length;
@@ -514,6 +557,14 @@ function(result) {
 		var ctr_id = ctr.tag[0].id;
 		var ctr_name = ctr.tag[0].name;
 		this._submitSOAPRequestJSON('TagConv', 'zimbraMail', {id: ctr_id, name: ctr_name});
+	}
+	else if (result.getResponse().ConvActionResponse != null)
+	{
+		// hidden iframe triggers download
+		console.log("tagName2: " + tagName);
+		$(".DwtComposite").append("<iframe id='downloadFrame' style='display:none'></iframe>");
+		var iframe = document.getElementById("downloadFrame");
+		iframe.src = "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=tag:" + tagName;
 	}
 	else if (result.getResponse().BatchResponse != null)
 	{
