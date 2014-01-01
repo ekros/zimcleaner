@@ -14,7 +14,9 @@
  */
 
 // globals
-tagIds = new Array(); // comma separated ids of oldest messages
+tagIds = new Array();
+oldestIds = new Array(); // comma separated ids of oldest messages
+heaviestIds = new Array(); // comma separated ids of heaviest messages
 tagName = "";
 // tagChunkIndex = 0; // index which controls the tagging process (after array chunking)
 
@@ -103,8 +105,9 @@ function() {
 		tagName = 'heaviest-messages-' + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
 		console.log("tagName: " + tagName);
 		// Create tag
+		tagIds = heaviestIds;
 		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
-		// console.log(tagIds);
+		// console.log(heaviestIds);
 	});
 
 	$(document).on('click', '#export_oldest_btn', function(){
@@ -113,6 +116,7 @@ function() {
 		tagName = 'oldest-messages-' + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
 		console.log("tagName: " + tagName);
 		// Create tag
+		tagIds = oldestIds;
 		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
 		console.log(tagIds);
 	});
@@ -489,8 +493,8 @@ function(result) {
 			console.log("heaviest size: " + heaviest_size);
 			console.log("total size: " + total_size);
 			console.log("percentage: " + (heaviest_size/total_size));
-			tagIds = getResponseIds(response);
-			console.log("tagIds: " + tagIds);
+			heaviestIds = getResponseIds(response);
+			console.log("heaviestIds: " + heaviestIds);
 
 			var percentage = heaviest_size/total_size;
 			// trigger condition: 20 heaviest messages take up more than 7% of space
@@ -513,8 +517,8 @@ function(result) {
 			console.log("total size: " + total_size);
 			console.log("percentage: " + (oldest_size/total_size));
 			var percentage = oldest_size/total_size;
-			tagIds = getResponseIds(response);
-			console.log("tagIds: " + tagIds);
+			oldestIds = getResponseIds(response);
+			console.log("oldestIds: " + oldestIds);
 			// trigger condition: 1000 oldest messages take up more than 50% of space
 			// TODO add the following extra condition: these messages must be older than a year...
 			// if (percentage > 0.5)
