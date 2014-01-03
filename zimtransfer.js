@@ -99,6 +99,19 @@ function() {
 		// var aYearAgo = today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
 	});
 
+	$(document).on('click', '#show_trash_btn', function(){
+		var _types = new AjxVector();
+		_types.add("CONV");
+		_types.add("BRIEFCASE_ITEM");
+		appCtxt.getSearchController().search({userInitiated: true, query: 'under:trash', sortBy: 'dateAsc', types:_types});
+		// console.log(appCtxt.getSearchController().getTypes({query: 'in:briefcase'}));
+	});
+
+	$(document).on('click', '#clean_trash_btn', function(){
+		// TODO confirm here
+		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"3","recursive":true});
+	});
+
 	$(document).on('click', '#export_heaviest_btn', function(){
 		// var aYearAgo = getAYearAgo();
 		var today = new Date();
@@ -483,7 +496,8 @@ function(result) {
 		// TODO this is workaround to distinguish between searches
 		if (response.sortBy == 'sizeDesc')
 		{
-			title = "Heaviest messages";
+			// title = "Heaviest messages";
+			title = "";
 			// check condition
 			heaviest_size = getResponseSize(response);
 			// for (i in response.c)
@@ -506,7 +520,8 @@ function(result) {
 		}
 		else if (response.sortBy == 'dateAsc')
 		{
-			title = "Oldest messages";
+			// title = "Oldest messages";
+			title = "";
 			// check condition
 			oldest_size = getResponseSize(response);
 			// for (i in response.c)
@@ -530,7 +545,8 @@ function(result) {
 		}
 		else if (response.sortBy == 'dateDesc')
 		{
-			title = "Unread messages";
+			// title = "Unread messages";
+			title = "";
 			// title += response.c.length;
 			// check condition
 			if (response.c.length > 100) {
@@ -561,6 +577,7 @@ function(result) {
 		var ctr_id = ctr.tag[0].id;
 		var ctr_name = ctr.tag[0].name;
 		this._submitSOAPRequestJSON('TagConv', 'zimbraMail', {id: ctr_id, name: ctr_name});
+		appCtxt.setStatusMsg('Items successfully tagged. Preparing download...');
 	}
 	else if (result.getResponse().ConvActionResponse != null)
 	{
@@ -702,29 +719,29 @@ function(result) {
 				   "<div class='bar1' title='spam' style='float: left; width: " + junk_per + "%; height: 20px; background-color: orange; border: 0px'></div>" + 
 				   "<div class='bar1' title='briefcase' style='float: left; width: " + briefcase_per + "%; height: 20px; background-color: maroon; border: 0px'></div>" + 
 				   "<div class='bar1' title='other folders' style='float: left; width: " + other_per + "%; height: 20px; background-color: green; border: 0px'></div>";
-		var clean_list = 
-		"<table class='table table-striped'>" + 
-			"<tr>" + 
-				"<td><strong>Select what you want to clean</strong></td>" + 
-				"<td><strong>Size</strong></td>" + 
-				"<td></td>" + 
-			"</tr>" + 		
-			"<tr>" + 
-				"<td>Trash</td>" + 
-				"<td>" + trash_size + "</td>" + 
-				"<td><button class='btn btn-mini' onClick=empty_trash()>Clean</button></td>" + 
-			"</tr>" + 
-			"<tr>" + 
-				"<td>Drafts</td>" + 
-				"<td>" + drafts_size + "</td>" + 
-				"<td><button class='btn btn-mini' onClick=empty_drafts()>Clean</button></td>" + 
-			"</tr>" + 
-			"<tr>" + 
-				"<td>Briefcase</td>" + 
-				"<td>" + briefcase_size + "</td>" + 
-				"<td><button class='btn btn-mini' onClick=empty_briefcase()>Clean</button></td>" + 
-			"</tr>" + 
-		"</table>";
+		var clean_list = "";
+		// "<table class='table table-striped'>" + 
+		// 	"<tr>" + 
+		// 		"<td><strong>Select what you want to clean</strong></td>" + 
+		// 		"<td><strong>Size</strong></td>" + 
+		// 		"<td></td>" + 
+		// 	"</tr>" + 		
+		// 	"<tr>" + 
+		// 		"<td>Trash</td>" + 
+		// 		"<td>" + trash_size + "</td>" + 
+		// 		"<td><button class='btn btn-mini' onClick=empty_trash()>Clean</button></td>" + 
+		// 	"</tr>" + 
+		// 	"<tr>" + 
+		// 		"<td>Drafts</td>" + 
+		// 		"<td>" + drafts_size + "</td>" + 
+		// 		"<td><button class='btn btn-mini' onClick=empty_drafts()>Clean</button></td>" + 
+		// 	"</tr>" + 
+		// 	"<tr>" + 
+		// 		"<td>Briefcase</td>" + 
+		// 		"<td>" + briefcase_size + "</td>" + 
+		// 		"<td><button class='btn btn-mini' onClick=empty_briefcase()>Clean</button></td>" + 
+		// 	"</tr>" + 
+		// "</table>";
 		
 		var space_details = "<div id='space_details'>Click on an element to see more</div>";
 
@@ -746,28 +763,29 @@ function(result) {
 		// INITIAL DATA
 		var initialData = "<strong>Suggestions</strong><br>";
 
-		if (trash_per >= 10)
+		if (trash_per >= 0) // TODO change to 10
 		{
-			initialData += "Parece que tienes la papelera bastante llena.<br>";
+			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your trash takes up too much space&nbsp<button id='show_trash_btn' class='btn btn-mini'>Show</button>&nbsp<button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
 		}
 		if (drafts_per >= 10)
 		{
-			initialData += "Parece que tienes muchos borradores.<br>";
+			// initialData += "Parece que tienes muchos borradores.<br>"; // TODO in 0.6 version
 		}
 		if (junk_per >= 10)
 		{
-			initialData += "Parece que tienes muchos correos basura.<br>";
+			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your spam takes up too much space&nbsp<button id='show_spam_btn' class='btn btn-mini'>Show</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>Clean</button></div>";
 		}
 		if (briefcase_per >= 10)
 		{
-			initialData += "Parece que tu maletín ocupa mucho espacio.<br>";
+			// TODO in 0.6 version
+			// initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your briefcase takes up too much space'></div>";
 		}
 
 		// SET CONTENT
 		app.setContent("<div style='background-color: lightgray; border: 1px;'>" + 
 			labels2 + "<br>" + bars2 + "<br><br>" + 
 			space_details +	"</div><br><br><br><br>" + 
-			"<div style='background-color: lightgray; border: 1px;'><br>" + clean_list + "</div><br><br>" + 
+			// "<div style='background-color: lightgray; border: 1px;'><br>" + clean_list + "</div><br><br>" + 
 			"<div id='suggestions' style='background-color: lightgray; border: 1px;'>" + initialData + "</div>");
 
 		// effect
