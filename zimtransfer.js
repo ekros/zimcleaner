@@ -18,6 +18,12 @@ tagIds = new Array();
 oldestIds = new Array(); // comma separated ids of oldest messages
 heaviestIds = new Array(); // comma separated ids of heaviest messages
 tagName = "";
+spam_limit_per = 10; // spam (junk) alarm limit percentage
+trash_limit_per = 10; // trash alarm limit percentage
+heaviest_limit_per = 7; // heaviest items alarm limit percentage
+oldest_limit_per = 50; // oldest items alarm limit percentage
+unread_limit = 100; // number of unread messages alarm limit
+
 // tagChunkIndex = 0; // index which controls the tagging process (after array chunking)
 
 /**
@@ -102,14 +108,39 @@ function() {
 	$(document).on('click', '#show_trash_btn', function(){
 		var _types = new AjxVector();
 		_types.add("CONV");
+		// _types.add("BRIEFCASE_ITEM");
+		appCtxt.getSearchController().search({userInitiated: true, query: 'under:trash', sortBy: 'dateAsc', types:_types});
+		// console.log(appCtxt.getSearchController().getTypes({query: 'in:briefcase'}));
+	});
+
+	$(document).on('click', '#show_trash_briefcase_btn', function(){
+		var _types = new AjxVector();
 		_types.add("BRIEFCASE_ITEM");
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:trash', sortBy: 'dateAsc', types:_types});
 		// console.log(appCtxt.getSearchController().getTypes({query: 'in:briefcase'}));
 	});
 
+	$(document).on('click', '#show_spam_btn', function(){
+		var _types = new AjxVector();
+		_types.add("CONV");
+		appCtxt.getSearchController().search({userInitiated: true, query: 'under:junk', sortBy: 'dateAsc', types:_types});
+		// console.log(appCtxt.getSearchController().getTypes({query: 'in:briefcase'}));
+	});
+
 	$(document).on('click', '#clean_trash_btn', function(){
-		// TODO confirm here
-		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"3","recursive":true});
+		var c = confirm("This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?");
+		if (c)
+		{
+			zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"3","recursive":true});
+		}
+	});
+
+	$(document).on('click', '#clean_spam_btn', function(){
+		var c = confirm("This will remove the spam folder contents. Are you sure to continue?");
+		if (c)
+		{
+			zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"4","recursive":true});
+		}
 	});
 
 	$(document).on('click', '#export_heaviest_btn', function(){
@@ -510,9 +541,9 @@ function(result) {
 			heaviestIds = getResponseIds(response);
 			console.log("heaviestIds: " + heaviestIds);
 
-			var percentage = heaviest_size/total_size;
+			var percentage = (heaviest_size/total_size)*100;
 			// trigger condition: 20 heaviest messages take up more than 7% of space
-			if (percentage > 0.07)
+			if (percentage > heaviest_limit_per)
 			{
 				body = "<div class='alert'><span class='icon-warning-sign'></span>Your heavy messages take up too much space&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>Show</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>Export and tag</button><span class='icon icon-question-sign' title='Export and tag messages..'></span></div>"; // TODO more descriptive title
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
@@ -531,13 +562,13 @@ function(result) {
 			console.log("oldest size: " + oldest_size);
 			console.log("total size: " + total_size);
 			console.log("percentage: " + (oldest_size/total_size));
-			var percentage = oldest_size/total_size;
+			var percentage = (oldest_size/total_size);
 			oldestIds = getResponseIds(response);
 			console.log("oldestIds: " + oldestIds);
 			// trigger condition: 1000 oldest messages take up more than 50% of space
 			// TODO add the following extra condition: these messages must be older than a year...
-			// if (percentage > 0.5)
-			if (true)
+			if (percentage > oldest_limit_per)
+			// if (true)
 			{
 				body = "<div class='alert'><span class='icon-warning-sign'></span>Your old messages take up too much space&nbsp<button id='show_oldest_btn' class='btn btn-mini'>Show</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>Export and tag</button><span class='icon icon-question-sign' title='Export and tag messages...	'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
@@ -549,7 +580,7 @@ function(result) {
 			title = "";
 			// title += response.c.length;
 			// check condition
-			if (response.c.length > 100) {
+			if (response.c.length > unread_limit) {
 				// action
 				body = "<div class='alert'><span class='icon-warning-sign'></span>You have too many unread messages</div>Solution: See unread messages<br>You can use filters in order to automatically deal with incoming messages. See Preferences > Filters";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
@@ -710,8 +741,8 @@ function(result) {
 		// var bars1 = "<div title='inbox' style='float: left; width: " + used_per + "%; height: 20px; background-color: green; border: 0px'></div>" + 
 		// 		   "<div title='trash' style='float: left; width: " + 100 - used_per + "%; height: 20px; background-color: white; border: 0px'></div>";
 
-		var labels2 = "<strong>Used space details</strong> | <span id='inbox' href='#' style='color: red'>Inbox " + inbox_per.toFixed(1) + "%</span> | <span id='trash' href='#' style='color: black'>Trash " + trash_per.toFixed(1) + "%</span> | <span id='drafts' href='#' style='color: deeppink'>Drafts " + drafts_per.toFixed(1) + "%</span>" + 
-					 " | <span id='sent' href='#' style='color: blue'>Sent " + sent_per.toFixed(1) + "%</span> | <span id='spam' href='#' style='color: orange'>Spam " + junk_per.toFixed(1) + "%</span> | <span id='briefcase' href='#' style='color: maroon'>Briefcase " + briefcase_per.toFixed(1) + "%</span> | <span id='other' href='#' style='color: green'>Other " + other_per.toFixed(1) + "%</span>";
+		var labels2 = "<strong>Used space details</strong> | <span id='inbox' href='#' style='color: red'>Inbox " + inbox_size + " (" + inbox_per.toFixed(1) + "%)</span> | <span id='trash' href='#' style='color: black'>Trash " + trash_size + " (" + trash_per.toFixed(1) + "%)</span> | <span id='drafts' href='#' style='color: deeppink'>Drafts " + drafts_size + " (" + drafts_per.toFixed(1) + "%)</span>" + 
+					 " | <span id='sent' href='#' style='color: blue'>Sent " + sent_size + " (" + sent_per.toFixed(1) + "%)</span> | <span id='spam' href='#' style='color: orange'>Spam " + junk_size + " (" + junk_per.toFixed(1) + "%)</span> | <span id='briefcase' href='#' style='color: maroon'>Briefcase " + briefcase_size + " (" + briefcase_per.toFixed(1) + "%)</span> | <span id='other' href='#' style='color: green'>Other " + other_size + " (" + other_per.toFixed(1) + "%)</span>";
 		var bars2 = "<div class='bar1' title='inbox' style='float: left; width: " + inbox_per + "%; height: 20px; background-color: red; border: 0px'></div>" + 
 				   "<div class='bar1' title='trash' style='float: left; width: " + trash_per + "%; height: 20px; background-color: black; border: 0px'></div>" + 
 				   "<div class='bar1' title='drafts' style='float: left; width: " + drafts_per + "%; height: 20px; background-color: deeppink; border: 0px'></div>" + 
@@ -763,9 +794,9 @@ function(result) {
 		// INITIAL DATA
 		var initialData = "<strong>Suggestions</strong><br>";
 
-		if (trash_per >= 0) // TODO change to 10
+		if (trash_per >= 10) // TODO change to 10
 		{
-			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your trash takes up too much space&nbsp<button id='show_trash_btn' class='btn btn-mini'>Show</button>&nbsp<button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
+			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your trash takes up too much space&nbsp<button id='show_trash_btn' class='btn btn-mini'>Show (messages)</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>Show (briefcase)</button><button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
 		}
 		if (drafts_per >= 10)
 		{
