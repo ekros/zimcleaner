@@ -20,6 +20,8 @@ heaviestIds = new Array(); // comma separated ids of heaviest messages
 tagName = "";
 spam_limit_per = 10; // spam (junk) alarm limit percentage
 trash_limit_per = 10; // trash alarm limit percentage
+briefcase_limit_per = 10;
+drafts_limit_per = 10;
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
 oldest_limit_per = 50; // oldest items alarm limit percentage
 unread_limit = 100; // number of unread messages alarm limit
@@ -409,7 +411,7 @@ function getResponseSize(response)
 	    {
 	    	result_size += value;
 	    }
-	}
+	};
 
 	function traverse(o,func) {
 	    for (var i in o) {
@@ -419,12 +421,12 @@ function getResponseSize(response)
 	            traverse(o[i],func);
 	        }
 	    }
-	}
+	};
 
 	//that's all... no magic, no bloated framework
 	traverse(response, process);
 	return result_size;
-}
+};
 
 function getResponseIds(response)
 {
@@ -438,7 +440,7 @@ function getResponseIds(response)
 	}
 
 	return idArray;
-}
+};
 
 // returns the date a year ago
 function getAYearAgo()
@@ -446,7 +448,14 @@ function getAYearAgo()
 	var today = new Date();
 	var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
 	return aYearAgo;
-}
+};
+
+function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return 'n/a';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[[i]];
+};
 
 // tag a list of conversations given their ids
 // zimtransfer_HandlerObject.prototype.tagAction =
@@ -731,6 +740,14 @@ function(result) {
 		var other_per = (other_size/total_size)*100;
 		// var used_per = (total_size/mailbox_size)*100;
 
+		var inbox_label = "Inbox " + bytesToSize(inbox_size) + " (" + inbox_per.toFixed(1) + "%)";
+		var trash_label = "Trash " + bytesToSize(trash_size) + " (" + trash_per.toFixed(1) + "%)";
+		var drafts_label = "Drafts " + bytesToSize(drafts_size) + " (" + drafts_per.toFixed(1) + "%)";
+		var sent_label = "Sent " + bytesToSize(sent_size) + " (" + sent_per.toFixed(1) + "%)";
+		var junk_label = "Spam " + bytesToSize(junk_size) + " (" + junk_per.toFixed(1) + "%)";
+		var briefcase_label = "Briefcase " + bytesToSize(briefcase_size) + " (" + briefcase_per.toFixed(1) + "%)";
+		var other_label = "Other " + bytesToSize(other_size) + " (" + other_per.toFixed(1) + "%)";
+
 		// var suggestions = "<br><br>Heaviest messages<br>";
 		// for (var i in response.SearchResponse[0].c)
 		// {
@@ -741,15 +758,15 @@ function(result) {
 		// var bars1 = "<div title='inbox' style='float: left; width: " + used_per + "%; height: 20px; background-color: green; border: 0px'></div>" + 
 		// 		   "<div title='trash' style='float: left; width: " + 100 - used_per + "%; height: 20px; background-color: white; border: 0px'></div>";
 
-		var labels2 = "<strong>Used space details</strong> | <span id='inbox' href='#' style='color: red'>Inbox " + inbox_size + " (" + inbox_per.toFixed(1) + "%)</span> | <span id='trash' href='#' style='color: black'>Trash " + trash_size + " (" + trash_per.toFixed(1) + "%)</span> | <span id='drafts' href='#' style='color: deeppink'>Drafts " + drafts_size + " (" + drafts_per.toFixed(1) + "%)</span>" + 
-					 " | <span id='sent' href='#' style='color: blue'>Sent " + sent_size + " (" + sent_per.toFixed(1) + "%)</span> | <span id='spam' href='#' style='color: orange'>Spam " + junk_size + " (" + junk_per.toFixed(1) + "%)</span> | <span id='briefcase' href='#' style='color: maroon'>Briefcase " + briefcase_size + " (" + briefcase_per.toFixed(1) + "%)</span> | <span id='other' href='#' style='color: green'>Other " + other_size + " (" + other_per.toFixed(1) + "%)</span>";
-		var bars2 = "<div class='bar1' title='inbox' style='float: left; width: " + inbox_per + "%; height: 20px; background-color: red; border: 0px'></div>" + 
-				   "<div class='bar1' title='trash' style='float: left; width: " + trash_per + "%; height: 20px; background-color: black; border: 0px'></div>" + 
-				   "<div class='bar1' title='drafts' style='float: left; width: " + drafts_per + "%; height: 20px; background-color: deeppink; border: 0px'></div>" + 
-				   "<div class='bar1' title='sent' style='float: left; width: " + sent_per + "%; height: 20px; background-color: blue; border: 0px'></div>" + 
-				   "<div class='bar1' title='spam' style='float: left; width: " + junk_per + "%; height: 20px; background-color: orange; border: 0px'></div>" + 
-				   "<div class='bar1' title='briefcase' style='float: left; width: " + briefcase_per + "%; height: 20px; background-color: maroon; border: 0px'></div>" + 
-				   "<div class='bar1' title='other folders' style='float: left; width: " + other_per + "%; height: 20px; background-color: green; border: 0px'></div>";
+		var labels2 = "<strong>Used space details</strong> | <a href='#'><span id='inbox' style='color: red'>" + inbox_label + "</span></a> | <a href='#'><span id='trash' style='color: green'>" + trash_label + "</span></a> | <a href='#'><span id='drafts' style='color: deeppink'>" + drafts_label + "</span></a>" + 
+					 " | <a href='#'><span id='sent' style='color: blue'>" + sent_label + "</span></a> | <a href='#'><span id='spam' style='color: orange'>" + junk_label + "</span></a> | <a href='#'><span id='briefcase' style='color: maroon'>" + briefcase_label + "</span></a> | <a href='#'><span id='other' style='color: black'>" + other_label + "</span></a>";
+		var bars2 = "<div class='bar1' title='" + inbox_label + "' style='float: left; width: " + inbox_per + "%; height: 20px; background-color: red; border: 0px'></div>" + 
+				   "<div class='bar1' title='" + trash_label + "' style='float: left; width: " + trash_per + "%; height: 20px; background-color: green; border: 0px'></div>" + 
+				   "<div class='bar1' title='" + drafts_label + "' style='float: left; width: " + drafts_per + "%; height: 20px; background-color: deeppink; border: 0px'></div>" + 
+				   "<div class='bar1' title='" + sent_label + "' style='float: left; width: " + sent_per + "%; height: 20px; background-color: blue; border: 0px'></div>" + 
+				   "<div class='bar1' title='" + junk_label + "' style='float: left; width: " + junk_per + "%; height: 20px; background-color: orange; border: 0px'></div>" + 
+				   "<div class='bar1' title='" + briefcase_label + "' style='float: left; width: " + briefcase_per + "%; height: 20px; background-color: maroon; border: 0px'></div>" + 
+				   "<div class='bar1' title='" + other_label + "' style='float: left; width: " + other_per + "%; height: 20px; background-color: black; border: 0px'></div>";
 		var clean_list = "";
 		// "<table class='table table-striped'>" + 
 		// 	"<tr>" + 
@@ -794,19 +811,19 @@ function(result) {
 		// INITIAL DATA
 		var initialData = "<strong>Suggestions</strong><br>";
 
-		if (trash_per >= 10) // TODO change to 10
+		if (trash_per >= trash_limit_per)
 		{
 			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your trash takes up too much space&nbsp<button id='show_trash_btn' class='btn btn-mini'>Show (messages)</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>Show (briefcase)</button><button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
 		}
-		if (drafts_per >= 10)
+		if (drafts_per >= drafts_limit_per)
 		{
 			// initialData += "Parece que tienes muchos borradores.<br>"; // TODO in 0.6 version
 		}
-		if (junk_per >= 10)
+		if (junk_per >= spam_limit_per)
 		{
 			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your spam takes up too much space&nbsp<button id='show_spam_btn' class='btn btn-mini'>Show</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>Clean</button></div>";
 		}
-		if (briefcase_per >= 10)
+		if (briefcase_per >= briefcase_limit_per)
 		{
 			// TODO in 0.6 version
 			// initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your briefcase takes up too much space'></div>";
@@ -863,6 +880,7 @@ function getSpaceDetails(name, folders, total_size)
 	var labels = "<strong>" + name + " space usage</strong>";
 	var bars = "";
 	var colors = ["red", "blue", "coral", "green", "darkblue", "orange", "maroon", "olive", "lime", "purple"];
+	var others_size = 0;
 
 	// sort folders by size
 	// var ordered_folders =  [];
@@ -913,16 +931,21 @@ function getSpaceDetails(name, folders, total_size)
 	{
 		if (i > 9) 
 		{
-			// TODO añadir espacio ocupado a 'otros'
+			others_size += ordered_folders[Object.keys(ordered_folders)[i]];
 		}
 		else
 		{
-			labels += " | <span style='color: " + colors[i] + "'>" + Object.keys(ordered_folders)[i].split(' ').join('_') + ": " + ((ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100).toFixed(1) + "%</span>";
-			bars += "<div class='bar2' title=" + Object.keys(ordered_folders)[i].split(' ').join('_') + " style='float: left; width: " + (ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100 + "%; height: 20px; background-color:" + colors[i] + "; border: 0px'></div>";
+			var folder_label = Object.keys(ordered_folders)[i].split(' ').join('_') + " " + bytesToSize(ordered_folders[Object.keys(ordered_folders)[i]]) + " (" + ((ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100).toFixed(1) + "%)";
+			labels += " | <span style='color: " + colors[i] + "'>" + folder_label + "</span>";
+			bars += "<div class='bar2' title='" + folder_label + "' style='float: left; width: " + (ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100 + "%; height: 20px; background-color:" + colors[i] + "; border: 0px'></div>";
 		}
 		// bars += (ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100;
 		// bars += Object.keys(ordered_folders)[i] + " " + ordered_folders[Object.keys(ordered_folders)[i]] + "<br>";
 	}
+	// add other folders to the result
+	var other_label = "Other " + bytesToSize(others_size) + " (" + ((others_size/total_size)*100).toFixed(1) + "%)";
+	labels += " | <span style='color:black'>" + other_label + "</span>";
+	bars += "<div class='bar2' title='" + other_label + "' style='float: left; width: " + ((others_size/total_size)*99).toFixed(1) + "%; height: 20px; background-color:black; border: 0px'></div>";
 	space_details = labels + "<br>" + bars;
 
 	return space_details;
