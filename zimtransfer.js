@@ -25,6 +25,70 @@ drafts_limit_per = 10;
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
 oldest_limit_per = 50; // oldest items alarm limit percentage
 unread_limit = 100; // number of unread messages alarm limit
+locale = "en-US"; // default locale
+VERSION = "0.5"; // version shown in the aplication
+
+function initLocales(locale_config)
+{
+	if (locale_config == "en-US") // en-US
+	{
+		HEAVIEST_WARNING = "Your heavy messages take up too much space";
+		SHOW_BUTTON = "Show";
+		EXPORT_AND_TAG_BUTTON = "Export and tag";
+		HEAVIEST_EXPORT_AND_TAG_TOOLTIP = "Download the 20th heaviest messages and tag them. After the download finishes you can safely delete the tagged messages.";
+		OLDEST_WARNING = "Your old messages take up too much space";
+		OLDEST_EXPORT_AND_TAG_TOOLTIP = "Download the 1000th oldest messages and tag them. After the download finishes you can safely delete the tagged messages";
+		UNREAD_WARNING = "You have too many unread messages";
+		UNREAD_ADVICE = "Solution: Check unread messages<br>You can use filters in order to automatically deal with incoming messages. See Preferences > Filters";
+		TAG_NOTIFICATION = "Items successfully tagged. Preparing download...";
+		SUGGESTIONS_TITLE = "Suggestions";
+		TRASH_WARNING = "Your trash takes up too much space";
+		SHOW_MESSAGES_BUTTON = "Show (messages)";
+		SHOW_BRIEFCASE_BUTTON = "Show (briefcase)";
+		SPAM_WARNING = "Your spam takes up too much space";
+		USER_QUOTA_TITLE = "User quota";
+		OF = "of";
+		SPACE_USAGE = "space usage";
+		USED_SPACE_DETAILS = "Used space details";
+		CLIC_TO_SEE_MORE_LABEL = "Click on an element to see more details";
+		INBOX = "Inbox";
+		TRASH = "Trash";
+		DRAFTS = "Drafts";
+		SENT = "Sent";
+		SPAM = "Spam";
+		BRIEFCASE = "Briefcase";
+		OTHER = "Other";
+	}
+	else if (locale_config == "es-ES") // es-ES
+	{
+		HEAVIEST_WARNING = "Los mensajes pesados ocupan demasiado espacio";			
+		SHOW_BUTTON = "Mostrar";
+		EXPORT_AND_TAG_BUTTON = "Exportar y etiquetar";
+		HEAVIEST_EXPORT_AND_TAG_TOOLTIP = "Descarga los 20 mensajes más pesados y los etiqueta. Al finalizar la descarga puede borrar los mensajes etiquetados con seguridad.";
+		OLDEST_WARNING = "Los mensajes viejos ocupan demasiado espacio";
+		OLDEST_EXPORT_AND_TAG_TOOLTIP = "Descarga los 1000 mensajes más antiguos y los etiqueta. Al finalizar la descarga puede borrar los mensajes etiquetados con seguridad.";
+		UNREAD_WARNING = "Tiene demasiados mensajes no leídos";
+		UNREAD_ADVICE = "Solución: Revisar mensajes no leídos.<br>Puede usar los filtros para ayudarle a lidiar con los mensajes entrantes. Vaya a Preferencias > Filtros";
+		TAG_NOTIFICATION = "Elementos etiquetados satisfactoriamente. Preparando descarga...";
+		SUGGESTIONS_TITLE = "Sugerencias";
+		TRASH_WARNING = "Los mensajes en tu papelera ocupan demasiado espacio";
+		SHOW_MESSAGES_BUTTON = "Mostrar (mensajes)";
+		SHOW_BRIEFCASE_BUTTON = "Mostrar (maletín)";
+		SPAM_WARNING = "Tus mensajes de correo no deseado (spam) ocupan demasiado espacio";
+		USER_QUOTA_TITLE = "Cuota de usuario";
+		OF = "de";
+		SPACE_USAGE = "espacio usado";
+		USED_SPACE_DETAILS = "Detalles del espacio utilizado";
+		CLIC_TO_SEE_MORE_LABEL = "Haga clic en un elemento para ver más detalles";
+		INBOX = "Bandeja de entrada";
+		TRASH = "Papelera";
+		DRAFTS = "Borradores";
+		SENT = "Enviados";
+		SPAM = "Spam";
+		BRIEFCASE = "Maletín";
+		OTHER = "Otros";		
+	}
+}
 
 // tagChunkIndex = 0; // index which controls the tagging process (after array chunking)
 
@@ -180,6 +244,9 @@ function(appName, active) {
 		case this._tabAppName: {			
 			if (active) {
 			
+				// get browser language and initialize locales
+				initLocales(navigator.language);
+
 				app = appCtxt.getApp(this._tabAppName); // returns ZmZimletApp
 			//	app.setContent(httpGet("https://eros-ferrari.mipiso-badalona.com/home/admin/Briefcase/zimtransfer"));
 /*app.setContent("<form method=POST ENCTYPE='multipart/form-data' ACTION='https://eros-ferrari.mipiso-badalona.com:7070/service/upload?fmt=raw' METHOD=POST>" +
@@ -194,7 +261,8 @@ function(appName, active) {
 				// up.popup();
 
 				var toolbar = app.getToolbar(); // returns ZmToolBar
-				// toolbar.setContent("<button onClick=empty_trash()>Empty trash</button>");
+
+				toolbar.setContent("<span style='color:red'>Zim</span>Cleaner<span class='pull-right'><small>version " + VERSION + "&nbsp<small></span>");
 
 				var overview = app.getOverview(); // returns ZmOverview
 				// overview.setContent("<b>THIS IS THE TAB APPLICATION OVERVIEW AREA</b>");
@@ -554,7 +622,7 @@ function(result) {
 			// trigger condition: 20 heaviest messages take up more than 7% of space
 			if (percentage > heaviest_limit_per)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>Your heavy messages take up too much space&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>Show</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>Export and tag</button><span class='icon icon-question-sign' title='Export and tag messages..'></span></div>"; // TODO more descriptive title
+				body = "<div class='alert'><span class='icon-warning-sign'></span>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
@@ -579,7 +647,7 @@ function(result) {
 			if (percentage > oldest_limit_per)
 			// if (true)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>Your old messages take up too much space&nbsp<button id='show_oldest_btn' class='btn btn-mini'>Show</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>Export and tag</button><span class='icon icon-question-sign' title='Export and tag messages...	'></span></div>";
+				body = "<div class='alert'><span class='icon-warning-sign'></span>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}			
 		}
@@ -591,7 +659,7 @@ function(result) {
 			// check condition
 			if (response.c.length > unread_limit) {
 				// action
-				body = "<div class='alert'><span class='icon-warning-sign'></span>You have too many unread messages</div>Solution: See unread messages<br>You can use filters in order to automatically deal with incoming messages. See Preferences > Filters";
+				body = "<div class='alert'><span class='icon-warning-sign'></span>" + UNREAD_WARNING + "</div>" + UNREAD_ADVICE;
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
@@ -617,7 +685,7 @@ function(result) {
 		var ctr_id = ctr.tag[0].id;
 		var ctr_name = ctr.tag[0].name;
 		this._submitSOAPRequestJSON('TagConv', 'zimbraMail', {id: ctr_id, name: ctr_name});
-		appCtxt.setStatusMsg('Items successfully tagged. Preparing download...');
+		appCtxt.setStatusMsg(TAG_NOTIFICATION);
 	}
 	else if (result.getResponse().ConvActionResponse != null)
 	{
@@ -740,13 +808,13 @@ function(result) {
 		var other_per = (other_size/total_size)*100;
 		// var used_per = (total_size/mailbox_size)*100;
 
-		var inbox_label = "Inbox " + bytesToSize(inbox_size) + " (" + inbox_per.toFixed(1) + "%)";
-		var trash_label = "Trash " + bytesToSize(trash_size) + " (" + trash_per.toFixed(1) + "%)";
-		var drafts_label = "Drafts " + bytesToSize(drafts_size) + " (" + drafts_per.toFixed(1) + "%)";
-		var sent_label = "Sent " + bytesToSize(sent_size) + " (" + sent_per.toFixed(1) + "%)";
-		var junk_label = "Spam " + bytesToSize(junk_size) + " (" + junk_per.toFixed(1) + "%)";
-		var briefcase_label = "Briefcase " + bytesToSize(briefcase_size) + " (" + briefcase_per.toFixed(1) + "%)";
-		var other_label = "Other " + bytesToSize(other_size) + " (" + other_per.toFixed(1) + "%)";
+		var inbox_label = INBOX + " " + bytesToSize(inbox_size) + " (" + inbox_per.toFixed(1) + "%)";
+		var trash_label = TRASH + " " + bytesToSize(trash_size) + " (" + trash_per.toFixed(1) + "%)";
+		var drafts_label = DRAFTS + " " + bytesToSize(drafts_size) + " (" + drafts_per.toFixed(1) + "%)";
+		var sent_label = SENT + " " + bytesToSize(sent_size) + " (" + sent_per.toFixed(1) + "%)";
+		var junk_label = SPAM + " " + bytesToSize(junk_size) + " (" + junk_per.toFixed(1) + "%)";
+		var briefcase_label = BRIEFCASE + " " + bytesToSize(briefcase_size) + " (" + briefcase_per.toFixed(1) + "%)";
+		var other_label = OTHER + " " + bytesToSize(other_size) + " (" + other_per.toFixed(1) + "%)";
 
 		// var suggestions = "<br><br>Heaviest messages<br>";
 		// for (var i in response.SearchResponse[0].c)
@@ -758,7 +826,7 @@ function(result) {
 		// var bars1 = "<div title='inbox' style='float: left; width: " + used_per + "%; height: 20px; background-color: green; border: 0px'></div>" + 
 		// 		   "<div title='trash' style='float: left; width: " + 100 - used_per + "%; height: 20px; background-color: white; border: 0px'></div>";
 
-		var labels2 = "<strong>Used space details</strong> | <a href='#'><span id='inbox' style='color: red'>" + inbox_label + "</span></a> | <a href='#'><span id='trash' style='color: green'>" + trash_label + "</span></a> | <a href='#'><span id='drafts' style='color: deeppink'>" + drafts_label + "</span></a>" + 
+		var labels2 = "<strong>" + USED_SPACE_DETAILS + "</strong> | <a href='#'><span id='inbox' style='color: red'>" + inbox_label + "</span></a> | <a href='#'><span id='trash' style='color: green'>" + trash_label + "</span></a> | <a href='#'><span id='drafts' style='color: deeppink'>" + drafts_label + "</span></a>" + 
 					 " | <a href='#'><span id='sent' style='color: blue'>" + sent_label + "</span></a> | <a href='#'><span id='spam' style='color: orange'>" + junk_label + "</span></a> | <a href='#'><span id='briefcase' style='color: maroon'>" + briefcase_label + "</span></a> | <a href='#'><span id='other' style='color: black'>" + other_label + "</span></a>";
 		var bars2 = "<div class='bar1' title='" + inbox_label + "' style='float: left; width: " + inbox_per + "%; height: 20px; background-color: red; border: 0px'></div>" + 
 				   "<div class='bar1' title='" + trash_label + "' style='float: left; width: " + trash_per + "%; height: 20px; background-color: green; border: 0px'></div>" + 
@@ -791,29 +859,29 @@ function(result) {
 		// 	"</tr>" + 
 		// "</table>";
 		
-		var space_details = "<div id='space_details'>Click on an element to see more</div>";
+		var space_details = "<div id='space_details'>" + CLIC_TO_SEE_MORE_LABEL + "</div>";
 
 		// inbox space usage
-		inbox_space_details = getSpaceDetails("Inbox", inbox_folder_names, inbox_size);
+		inbox_space_details = getSpaceDetails(INBOX, inbox_folder_names, inbox_size);
 		// trash space usage
-		trash_space_details = getSpaceDetails("Trash", trash_folder_names, trash_size);
+		trash_space_details = getSpaceDetails(TRASH, trash_folder_names, trash_size);
 		// drafts space usage
-		drafts_space_details = getSpaceDetails("Drafts", drafts_folder_names, drafts_size);
+		drafts_space_details = getSpaceDetails(DRAFTS, drafts_folder_names, drafts_size);
 		// sent space usage
-		sent_space_details = getSpaceDetails("Sent", sent_folder_names, sent_size);
+		sent_space_details = getSpaceDetails(SENT, sent_folder_names, sent_size);
 		// spam space usage
-		junk_space_details = getSpaceDetails("Spam", junk_folder_names, junk_size);
+		junk_space_details = getSpaceDetails(SPAM, junk_folder_names, junk_size);
 		// briefcase space usage
-		briefcase_space_details = getSpaceDetails("Briefcase", briefcase_folder_names, briefcase_size);
+		briefcase_space_details = getSpaceDetails(BRIEFCASE, briefcase_folder_names, briefcase_size);
 		// other space usage
-		other_space_details = getSpaceDetails("Other folders", other_folder_names, other_size);
+		other_space_details = getSpaceDetails(OTHER, other_folder_names, other_size);
 
 		// INITIAL DATA
-		var initialData = "<strong>Suggestions</strong><br>";
+		var initialData = "<strong>" + SUGGESTIONS_TITLE + "</strong><br>";
 
 		if (trash_per >= trash_limit_per)
 		{
-			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your trash takes up too much space&nbsp<button id='show_trash_btn' class='btn btn-mini'>Show (messages)</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>Show (briefcase)</button><button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
+			initialData += "<div class='alert'><span class='icon-warning-sign'></span>" + TRASH_WARNING + "&nbsp<button id='show_trash_btn' class='btn btn-mini'>" + SHOW_MESSAGES_BUTTON + "</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>" + SHOW_BRIEFCASE_BUTTON + "</button><button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
 		}
 		if (drafts_per >= drafts_limit_per)
 		{
@@ -821,7 +889,7 @@ function(result) {
 		}
 		if (junk_per >= spam_limit_per)
 		{
-			initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your spam takes up too much space&nbsp<button id='show_spam_btn' class='btn btn-mini'>Show</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>Clean</button></div>";
+			initialData += "<div class='alert'><span class='icon-warning-sign'></span>" + SPAM_WARNING + "&nbsp<button id='show_spam_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>Clean</button></div>";
 		}
 		if (briefcase_per >= briefcase_limit_per)
 		{
@@ -829,8 +897,13 @@ function(result) {
 			// initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your briefcase takes up too much space'></div>";
 		}
 
+		// USER QUOTA
+		var quota = appCtxt.get(ZmSetting.QUOTA);
+		var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
+
 		// SET CONTENT
-		app.setContent("<div style='background-color: lightgray; border: 1px;'>" + 
+		app.setContent("<strong>" + USER_QUOTA_TITLE + "</strong> " + bytesToSize(quota_used) + " " + OF + " " + bytesToSize(quota) + "<br>" + // TODO show quota with decimals (1.4Gb instead of 1Gb)
+			"<div style='background-color: lightgray; border: 1px;'>" + 
 			labels2 + "<br>" + bars2 + "<br><br>" + 
 			space_details +	"</div><br><br><br><br>" + 
 			// "<div style='background-color: lightgray; border: 1px;'><br>" + clean_list + "</div><br><br>" + 
@@ -877,7 +950,7 @@ String.prototype.beginsWith = function (string) {
 function getSpaceDetails(name, folders, total_size)
 {
 	var space_details = null;
-	var labels = "<strong>" + name + " space usage</strong>";
+	var labels = "<strong>" + name + " " + SPACE_USAGE + "</strong>";
 	var bars = "";
 	var colors = ["red", "blue", "coral", "green", "darkblue", "orange", "maroon", "olive", "lime", "purple"];
 	var others_size = 0;
@@ -935,7 +1008,9 @@ function getSpaceDetails(name, folders, total_size)
 		}
 		else
 		{
-			var folder_label = Object.keys(ordered_folders)[i].split(' ').join('_') + " " + bytesToSize(ordered_folders[Object.keys(ordered_folders)[i]]) + " (" + ((ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100).toFixed(1) + "%)";
+			if (i == 0) var folder_name = "/"; // root folder
+			else var folder_name = Object.keys(ordered_folders)[i].slice(Object.keys(ordered_folders)[i].indexOf("/", 1)).split(' ').join('_');
+			var folder_label = folder_name + " " + bytesToSize(ordered_folders[Object.keys(ordered_folders)[i]]) + " (" + ((ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100).toFixed(1) + "%)";
 			labels += " | <span style='color: " + colors[i] + "'>" + folder_label + "</span>";
 			bars += "<div class='bar2' title='" + folder_label + "' style='float: left; width: " + (ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100 + "%; height: 20px; background-color:" + colors[i] + "; border: 0px'></div>";
 		}
