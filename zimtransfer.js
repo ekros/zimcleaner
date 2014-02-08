@@ -25,7 +25,7 @@ drafts_limit_per = 10;
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
 oldest_limit_per = 50; // oldest items alarm limit percentage
 unread_limit = 100; // number of unread messages alarm limit
-locale = "en-US"; // default locale
+default_locale = "en-US"; // default locale
 VERSION = "0.5"; // version shown in the aplication
 
 function initLocales(locale_config)
@@ -243,9 +243,16 @@ function(appName, active) {
 	switch(appName) {
 		case this._tabAppName: {			
 			if (active) {
-			
+
 				// get browser language and initialize locales
-				initLocales(navigator.language);
+				if (navigator.language == "en-US" || navigator.language == "es-ES")
+				{
+					initLocales(navigator.language);
+				}
+				else
+				{
+					initLocales(default_locale);
+				}
 
 				app = appCtxt.getApp(this._tabAppName); // returns ZmZimletApp
 			//	app.setContent(httpGet("https://eros-ferrari.mipiso-badalona.com/home/admin/Briefcase/zimtransfer"));
