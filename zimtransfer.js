@@ -24,6 +24,8 @@ briefcase_limit_per = 10;
 drafts_limit_per = 10;
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
 oldest_limit_per = 50; // oldest items alarm limit percentage
+critical_limit_per = 95; // over this percentage enter critical mode
+user_quota_per = null; // user quota percentage
 unread_limit = 100; // number of unread messages alarm limit
 default_locale = "en-US"; // default locale
 VERSION = "0.5"; // version shown in the aplication
@@ -255,6 +257,12 @@ function(appName, active) {
 				}
 
 				app = appCtxt.getApp(this._tabAppName); // returns ZmZimletApp
+
+				var quota = appCtxt.get(ZmSetting.QUOTA);
+				var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
+				user_quota_per = (quota_used/quota)*100;
+				console.log("USER QUOTA PER " + user_quota_per);
+
 			//	app.setContent(httpGet("https://eros-ferrari.mipiso-badalona.com/home/admin/Briefcase/zimtransfer"));
 /*app.setContent("<form method=POST ENCTYPE='multipart/form-data' ACTION='https://eros-ferrari.mipiso-badalona.com:7070/service/upload?fmt=raw' METHOD=POST>" +
 	"<input type='file' name='the_attachment' />" +
