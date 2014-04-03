@@ -82,3 +82,61 @@ function bytesToSize(bytes) {
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[[i]];
 };
 
+function empty_trash()
+{
+        zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"3","recursive":true});
+}
+
+function empty_drafts()
+{
+        zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"6","recursive":true});
+}
+
+function empty_briefcase()
+{
+        zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"16","recursive":true});
+}
+
+
+function getResponseSize(response)
+{
+        var result_size = 0;
+
+        //called with every property and it's value
+        function process(key,value) {
+          if (key == 's')
+          {
+            result_size += value;
+          }
+        };
+        function traverse(o,func) {
+          for (var i in o) {
+            func.apply(this,[i,o[i]]);
+            if (typeof(o[i])=="object") {
+              //going on step down in the object tree!!
+              traverse(o[i],func);
+            }
+          }
+                                                                                                                                                                                                            };
+        
+                                                                                                                                                                                                                    //that's all... no magic, no bloated framework
+        traverse(response, process);
+        return result_size;
+};
+        
+function getResponseIds(response)
+{
+  var idArray = new Array();
+  var convArray = response.c;
+
+        // iterate over conversations
+  for (var i in convArray)
+  {
+    idArray.push(convArray[i].id);
+  }
+  return idArray;
+};
+
+String.prototype.beginsWith = function (string) {
+    return(this.indexOf(string) === 0);
+};

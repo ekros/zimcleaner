@@ -2,8 +2,9 @@
   <include>zimcleaner.js</include>
   <include>functions.js</include>
   <include>locales.js</include>
+  <include>events.js</include>
   <include>jquery-1.10.1.min.js</include>
-    <handlerObject>zimtransfer_HandlerObject</handlerObject>
-	  <zimletPanelItem label="ZimCleaner">
-	    </zimletPanelItem>
-		</zimlet>
+  <handlerObject>zimtransfer_HandlerObject</handlerObject>
+  <zimletPanelItem label="ZimCleaner">
+  </zimletPanelItem>
+</zimlet>
