@@ -3,15 +3,21 @@ tagIds = new Array();
 oldestIds = new Array(); // comma separated ids of oldest messages
 heaviestIds = new Array(); // comma separated ids of heaviest messages
 tagName = "";
-spam_limit_per = 10; // spam (junk) alarm limit percentage
+spam_limit_per = 5; // spam (junk) alarm limit percentage
+spam_limit_per_crit = 2.5; // spam (junk) alarm limit percentage (CRITICAL)
 trash_limit_per = 10; // trash alarm limit percentage
+trash_limit_per_crit = 5; // trash alarm limit percentage (CRITICAL)
 briefcase_limit_per = 10;
-drafts_limit_per = 10;
+drafts_limit_per = 10; // drafts items limit percentage
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
+heaviest_limit_per_crit = 3; // heaviest items alarm limit percentage (CRITICAL)
 oldest_limit_per = 50; // oldest items alarm limit percentage
+oldest_limit_per_crit = 10; // oldest items alarm limit percentatge (CRITICAL)
 unread_limit = 100; // number of unread messages alarm limit
+critical_limit = 0.95; // critical usage limit
 locale = "en-US"; // default locale
 VERSION = "0.5"; // version shown in the aplication
+quotaIsCritical = false; // Is quota almost full?
 
 /**
  * Defines the Zimlet handler class.
@@ -44,7 +50,7 @@ function(appName, active) {
 
 				var toolbar = app.getToolbar(); // returns ZmToolBar
 
-				toolbar.setContent("<span style='color:red'>Zim</span>Cleaner<span class='pull-right'><small>version " + VERSION + "&nbsp<small></span>");
+				toolbar.setContent("<span style='color:red'>Zim</span>Cleaner<span class='pull-right'><small>  (version " + VERSION + ")<small></span>");
 
 				var overview = app.getOverview(); // returns ZmOverview
 
@@ -242,36 +248,46 @@ function(result) {
 		var title = "";
 		var body = "";
 		// TODO this is workaround to distinguish between searches
+		// HEAVIEST MESSAGES
 		if (response.sortBy == 'sizeDesc')
 		{
 			title = "";
 			// check condition
 			heaviest_size = getResponseSize(response);
 			heaviestIds = getResponseIds(response);
-
 			var percentage = (heaviest_size/total_size)*100;
-			// trigger condition: 20 heaviest messages take up more than 7% of space
-			if (percentage > heaviest_limit_per)
+			// trigger condition: 20 heaviest messages take up more than x% of space
+			// depending on the current space usage
+			var hl = quotaIsCritical ? heaviest_limit_per_crit : heaviest_limit_per
+			console.log("hl: " + hl);
+			console.log("hl percentage: " + percentage);
+			if (percentage > hl)
 			{
 				body = "<div class='alert'><span class='icon-warning-sign'></span>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
+		// OLDEST MESSAGES
 		else if (response.sortBy == 'dateAsc')
 		{
 			title = "";
 			// check condition
 			oldest_size = getResponseSize(response);
-			var percentage = (oldest_size/total_size);
+			var percentage = (oldest_size/total_size)*100;
 			oldestIds = getResponseIds(response);
 			// trigger condition: 1000 oldest messages take up more than 50% of space
 			// TODO add the following extra condition: these messages must be older than a year...
-			if (percentage > oldest_limit_per)
+			// depending on the current space usage
+			var ol = quotaIsCritical ? oldest_limit_per_crit : oldest_limit_per
+			console.log("ol: " + ol);
+			console.log("ol percentage: " + percentage);
+			if (percentage > ol)
 			{
 				body = "<div class='alert'><span class='icon-warning-sign'></span>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}			
 		}
+		// UNREAD MESSAGES
 		else if (response.sortBy == 'dateDesc')
 		{
 			title = "";
@@ -420,10 +436,23 @@ function(result) {
 		briefcase_space_details = getSpaceDetails(BRIEFCASE, briefcase_folder_names, briefcase_size); // briefcase
 		other_space_details = getSpaceDetails(OTHER, other_folder_names, other_size); // other
 
+		// USER QUOTA
+		var quota = appCtxt.get(ZmSetting.QUOTA);
+		var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
+		if ( quota_used/quota > critical_limit )
+		{
+			quotaIsCritical = true;
+		}
+
 		// INITIAL DATA
 		var initialData = "<strong>" + SUGGESTIONS_TITLE + "</strong><br>";
-
-		if (trash_per >= trash_limit_per)
+		// CRITICAL WARNING
+		if (quotaIsCritical) initialData += "<br><strong style='color: red'>" + CRITICAL_WARNING + "</strong><br><br>";
+		// TRASH LIMIT WARNING
+		var tl = quotaIsCritical ? trash_limit_per_crit : trash_limit_per
+		console.log("tl: " + tl);
+		console.log("tl percentage: " + trash_per);
+		if (trash_per >= tl)
 		{
 			initialData += "<div class='alert'><span class='icon-warning-sign'></span>" + TRASH_WARNING + "&nbsp<button id='show_trash_btn' class='btn btn-mini'>" + SHOW_MESSAGES_BUTTON + "</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>" + SHOW_BRIEFCASE_BUTTON + "</button><button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
 		}
@@ -431,7 +460,11 @@ function(result) {
 		{
 			// initialData += "Parece que tienes muchos borradores.<br>"; // TODO in 0.6 version
 		}
-		if (junk_per >= spam_limit_per)
+		// SPAM LIMIT WARNING
+		var sl = quotaIsCritical ? spam_limit_per_crit : spam_limit_per
+		console.log("sl: " + sl);
+		console.log("sl percentage: " + junk_per);
+		if (junk_per >= sl)
 		{
 			initialData += "<div class='alert'><span class='icon-warning-sign'></span>" + SPAM_WARNING + "&nbsp<button id='show_spam_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>Clean</button></div>";
 		}
@@ -441,12 +474,8 @@ function(result) {
 			// initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your briefcase takes up too much space'></div>";
 		}
 
-		// USER QUOTA
-		var quota = appCtxt.get(ZmSetting.QUOTA);
-		var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
-
 		// SET CONTENT
-		app.setContent("<strong>" + USER_QUOTA_TITLE + "</strong> " + bytesToSize(quota_used) + " " + OF + " " + bytesToSize(quota) + "<br>" + // TODO show quota with decimals (1.4Gb instead of 1Gb)
+		app.setContent("<strong>" + USER_QUOTA_TITLE + "</strong> " + bytesToSize(quota_used) + " " + OF + " " + bytesToSize(quota) + "<br><br>" + // TODO show quota with decimals (1.4Gb instead of 1Gb)
 			"<div style='background-color: lightgray; border: 1px;'>" + 
 			labels2 + "<br>" + bars2 + "<br><br>" + 
 			space_details +	"</div><br><br><br><br>" + 
@@ -462,10 +491,12 @@ function(result) {
 			$("#z_shell").css("overflow-y", "hidden");
 		});
 
-		// send search requestsCannot assign requested address
+		// -------------------------------------------------------------------------------------------------
+		// send search requests
 		this._submitSOAPRequestJSON('SearchHeaviest', 'zimbra');
 		this._submitSOAPRequestJSON('SearchOldest', 'zimbra');
 		this._submitSOAPRequestJSON('SearchUnread', 'zimbra');
+		// -------------------------------------------------------------------------------------------------
 	}
 };
 

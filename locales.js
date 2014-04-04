@@ -11,6 +11,7 @@ function initLocales(locale_config)
                 OLDEST_EXPORT_AND_TAG_TOOLTIP = "Download the 1000th oldest messages and tag them. After the download finishes you can safely delete the tagged messages";
                 UNREAD_WARNING = "You have too many unread messages";
                 UNREAD_ADVICE = "Solution: Check unread messages<br>You can use filters in order to automatically deal with incoming messages. See Preferences > Filters";
+		CRITICAL_WARNING = "Your mailbox quota is almost full.";
                 TAG_NOTIFICATION = "Items successfully tagged. Preparing download...";
                 SUGGESTIONS_TITLE = "Suggestions";
                 TRASH_WARNING = "Your trash takes up too much space";
@@ -40,6 +41,7 @@ function initLocales(locale_config)
                 OLDEST_EXPORT_AND_TAG_TOOLTIP = "Descarga los 1000 mensajes más antiguos y los etiqueta. Al finalizar la descarga puede borrar los mensajes etiquetados con seguridad.";
                 UNREAD_WARNING = "Tiene demasiados mensajes no leídos";
                 UNREAD_ADVICE = "Solución: Revisar mensajes no leídos.<br>Puede usar los filtros para ayudarle a lidiar con los mensajes entrantes. Vaya a Preferencias > Filtros";
+		CRITICAL_WARNING = "Tu buzón está casi lleno";
                 TAG_NOTIFICATION = "Elementos etiquetados satisfactoriamente. Preparando descarga...";
                 SUGGESTIONS_TITLE = "Sugerencias";
                 TRASH_WARNING = "Los mensajes en tu papelera ocupan demasiado espacio";
