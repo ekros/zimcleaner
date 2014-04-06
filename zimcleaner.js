@@ -9,6 +9,7 @@ trash_limit_per = 10; // trash alarm limit percentage
 trash_limit_per_crit = 5; // trash alarm limit percentage (CRITICAL)
 briefcase_limit_per = 10;
 drafts_limit_per = 10; // drafts items limit percentage
+drafts_limit_per_crit = 5; // drafts items limit percentage (CRITICAL)
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
 heaviest_limit_per_crit = 3; // heaviest items alarm limit percentage (CRITICAL)
 oldest_limit_per = 50; // oldest items alarm limit percentage
@@ -16,7 +17,7 @@ oldest_limit_per_crit = 10; // oldest items alarm limit percentatge (CRITICAL)
 unread_limit = 100; // number of unread messages alarm limit
 critical_limit = 0.95; // critical usage limit
 locale = "en-US"; // default locale
-VERSION = "0.5"; // version shown in the aplication
+VERSION = "0.6"; // version shown in the aplication
 quotaIsCritical = false; // Is quota almost full?
 
 /**
@@ -263,7 +264,7 @@ function(result) {
 			console.log("hl percentage: " + percentage);
 			if (percentage > hl)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
+				body = "<div class='alert'>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
@@ -283,7 +284,7 @@ function(result) {
 			console.log("ol percentage: " + percentage);
 			if (percentage > ol)
 			{
-				body = "<div class='alert'><span class='icon-warning-sign'></span>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
+				body = "<div class='alert'>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}			
 		}
@@ -294,7 +295,7 @@ function(result) {
 			// check condition
 			if (response.c.length > unread_limit) {
 				// action
-				body = "<div class='alert'><span class='icon-warning-sign'></span>" + UNREAD_WARNING + "</div>" + UNREAD_ADVICE;
+				body = "<div class='alert'>" + UNREAD_WARNING + "</div>" + UNREAD_ADVICE;
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
@@ -454,11 +455,14 @@ function(result) {
 		console.log("tl percentage: " + trash_per);
 		if (trash_per >= tl)
 		{
-			initialData += "<div class='alert'><span class='icon-warning-sign'></span>" + TRASH_WARNING + "&nbsp<button id='show_trash_btn' class='btn btn-mini'>" + SHOW_MESSAGES_BUTTON + "</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>" + SHOW_BRIEFCASE_BUTTON + "</button><button id='clean_trash_btn' class='btn btn-mini'>Clean</button></div>";
+			initialData += "<div class='alert'>" + TRASH_WARNING + "&nbsp<button id='show_trash_btn' class='btn btn-mini'>" + SHOW_MESSAGES_BUTTON + "</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>" + SHOW_BRIEFCASE_BUTTON + "</button><button id='clean_trash_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
-		if (drafts_per >= drafts_limit_per)
+		var dl = quotaIsCritical ? drafts_limit_per_crit : drafts_limit_per
+		console.log("dl: " + dl);
+		console.log("dl percentage: " + drafts_per);
+		if (drafts_per >= dl)
 		{
-			// initialData += "Parece que tienes muchos borradores.<br>"; // TODO in 0.6 version
+			initialData += "<div class='alert'>" + DRAFT_WARNING + "&nbsp<button id='show_drafts_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button><button id='clean_drafts_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		// SPAM LIMIT WARNING
 		var sl = quotaIsCritical ? spam_limit_per_crit : spam_limit_per
@@ -466,12 +470,12 @@ function(result) {
 		console.log("sl percentage: " + junk_per);
 		if (junk_per >= sl)
 		{
-			initialData += "<div class='alert'><span class='icon-warning-sign'></span>" + SPAM_WARNING + "&nbsp<button id='show_spam_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>Clean</button></div>";
+			initialData += "<div class='alert'>" + SPAM_WARNING + "&nbsp<button id='show_spam_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		if (briefcase_per >= briefcase_limit_per)
 		{
 			// TODO in 0.6 version
-			// initialData += "<div class='alert'><span class='icon-warning-sign'></span>Your briefcase takes up too much space'></div>";
+			// initialData += "<div class='alert'>Your briefcase takes up too much space'></div>";
 		}
 
 		// SET CONTENT

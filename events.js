@@ -74,10 +74,16 @@ function() {
 		var _types = new AjxVector();
 		_types.add("CONV");
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:junk', sortBy: 'dateAsc', types:_types});
+	});	
+
+	$(document).on('click', '#show_drafts_btn', function(){
+		var _types = new AjxVector();
+		_types.add("CONV");
+		appCtxt.getSearchController().search({userInitiated: true, query: 'under:drafts', sortBy: 'dateAsc', types:_types});
 	});
 
 	$(document).on('click', '#clean_trash_btn', function(){
-		var c = confirm("This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?");
+		var c = confirm(CLEAN_TRASH_CONFIRM);
 		if (c)
 		{
 			zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"3","recursive":true});
@@ -85,16 +91,24 @@ function() {
 	});
 
 	$(document).on('click', '#clean_spam_btn', function(){
-		var c = confirm("This will remove the spam folder contents. Are you sure to continue?");
+		var c = confirm(CLEAN_SPAM_CONFIRM);
 		if (c)
 		{
 			zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"4","recursive":true});
 		}
 	});
 
+	$(document).on('click', '#clean_drafts_btn', function(){
+		var c = confirm(CLEAN_DRAFTS_CONFIRM);
+		if (c)
+		{
+			zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('FolderAction', 'zimbraMail', {"op":"empty","id":"6","recursive":true});
+		}
+	});
+
 	$(document).on('click', '#export_heaviest_btn', function(){
 		var today = new Date();
-		tagName = 'heaviest-messages-' + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
+		tagName = HEAVIEST_MESSAGES_TAG + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
 		console.log("tagName: " + tagName);
 		// Create tag
 		tagIds = heaviestIds;
@@ -103,7 +117,7 @@ function() {
 
 	$(document).on('click', '#export_oldest_btn', function(){
 		var today = new Date();
-		tagName = 'oldest-messages-' + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
+		tagName = OLDEST_MESSAGES_TAG + today.toLocaleDateString() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
 		console.log("tagName: " + tagName);
 		// Create tag
 		tagIds = oldestIds;
