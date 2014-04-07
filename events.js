@@ -82,6 +82,12 @@ function() {
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:drafts', sortBy: 'dateAsc', types:_types});
 	});
 
+	$(document).on('click', '#show_briefcase_btn', function(){
+		var _types = new AjxVector();
+		_types.add("BRIEFCASE_ITEM");
+		appCtxt.getSearchController().search({userInitiated: true, query: 'under:briefcase', sortBy: 'sizeDesc', types:_types});
+	});
+
 	$(document).on('click', '#clean_trash_btn', function(){
 		var c = confirm(CLEAN_TRASH_CONFIRM);
 		if (c)

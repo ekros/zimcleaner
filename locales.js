@@ -20,6 +20,7 @@ function initLocales(locale_config)
                 SHOW_BRIEFCASE_BUTTON = "Show (briefcase)";
                 SPAM_WARNING = "Your spam takes up too much space";
                 DRAFT_WARNING = "Your drafts take up too much space";
+		BRIEFCASE_WARNING = "Your briefcase takes up too much space";
                 USER_QUOTA_TITLE = "User quota";
                 OF = "of";
                 SPACE_USAGE = "space usage";
@@ -59,6 +60,7 @@ function initLocales(locale_config)
                 SHOW_BRIEFCASE_BUTTON = "Mostrar (maletín)";
                 SPAM_WARNING = "Tus mensajes de correo no deseado (spam) ocupan demasiado espacio";
                 DRAFT_WARNING = "Tus borradores ocupan demasiado espacio";
+		BRIEFCASE_WARNING = "Tu maletín ocupa demasiado espacio.";
                 USER_QUOTA_TITLE = "Cuota de usuario";
                 OF = "de";
                 SPACE_USAGE = "espacio usado";

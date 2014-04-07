@@ -7,7 +7,8 @@ spam_limit_per = 5; // spam (junk) alarm limit percentage
 spam_limit_per_crit = 2.5; // spam (junk) alarm limit percentage (CRITICAL)
 trash_limit_per = 10; // trash alarm limit percentage
 trash_limit_per_crit = 5; // trash alarm limit percentage (CRITICAL)
-briefcase_limit_per = 10;
+briefcase_limit_per = 10; // briefcase alarm limit percentage
+briefcase_limit_per_crit = 5; // briefcase alarm limit percentage (CRITICAL)
 drafts_limit_per = 10; // drafts items limit percentage
 drafts_limit_per_crit = 5; // drafts items limit percentage (CRITICAL)
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
@@ -472,10 +473,13 @@ function(result) {
 		{
 			initialData += "<div class='alert'>" + SPAM_WARNING + "&nbsp<button id='show_spam_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
-		if (briefcase_per >= briefcase_limit_per)
+		// BRIEFCASE LIMIT WARNING
+		var bl = quotaIsCritical ? briefcase_limit_per_crit : briefcase_limit_per
+		console.log("bl: " + bl);
+		console.log("bl percentage: " + briefcase_per);
+		if (briefcase_per >= bl)
 		{
-			// TODO in 0.6 version
-			// initialData += "<div class='alert'>Your briefcase takes up too much space'></div>";
+			initialData += "<div class='alert'>" + BRIEFCASE_WARNING + "&nbsp<button id='show_briefcase_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button></div>";
 		}
 
 		// SET CONTENT
