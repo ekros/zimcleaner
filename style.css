@@ -1,4 +1,7 @@
-/*#z_shell div
-{
-	overflow-y: auto !important;
-}*/
+.Imgzimcleaner-panelIcon {
+  background: url("zimcleaner-icon.gif") no-repeat 0 0;
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+}
+
