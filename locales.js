@@ -13,6 +13,7 @@ function initLocales(locale_config)
                 UNREAD_WARNING = "You have too many unread messages";
                 UNREAD_ADVICE = "Solution: Check unread messages<br>You can use filters in order to automatically deal with incoming messages. See Preferences > Filters";
                 CRITICAL_WARNING = "Your mailbox quota is almost full.";
+                CLICK_ON_TAB = "Click on Zimcleaner tab to know more.";
                 TAG_NOTIFICATION = "Items successfully tagged. Preparing download...";
                 SUGGESTIONS_TITLE = "Suggestions";
                 TRASH_WARNING = "Your trash takes up too much space";
@@ -20,7 +21,7 @@ function initLocales(locale_config)
                 SHOW_BRIEFCASE_BUTTON = "Show (briefcase)";
                 SPAM_WARNING = "Your spam takes up too much space";
                 DRAFT_WARNING = "Your drafts take up too much space";
-		BRIEFCASE_WARNING = "Your briefcase takes up too much space";
+                BRIEFCASE_WARNING = "Your briefcase takes up too much space";
                 USER_QUOTA_TITLE = "User quota";
                 OF = "of";
                 SPACE_USAGE = "space usage";
@@ -52,7 +53,8 @@ function initLocales(locale_config)
                 OLDEST_EXPORT_AND_TAG_TOOLTIP = "Descarga los 1000 mensajes más antiguos y los etiqueta. Al finalizar la descarga puede borrar los mensajes etiquetados con seguridad.";
                 UNREAD_WARNING = "Tiene demasiados mensajes no leídos";
                 UNREAD_ADVICE = "Solución: Revisar mensajes no leídos.<br>Puede usar los filtros para ayudarle a lidiar con los mensajes entrantes. Vaya a Preferencias > Filtros";
-                CRITICAL_WARNING = "Tu buzón está casi lleno";
+                CRITICAL_WARNING = "Tu buzón está casi lleno.";
+                CLICK_ON_TAB = "Haga clic en la pestaña Zimcleaner para saber más.";
                 TAG_NOTIFICATION = "Elementos etiquetados satisfactoriamente. Preparando descarga...";
                 SUGGESTIONS_TITLE = "Sugerencias";
                 TRASH_WARNING = "Los mensajes en tu papelera ocupan demasiado espacio";

@@ -20,6 +20,7 @@ critical_limit = 0.95; // critical usage limit
 locale = "en-US"; // default locale
 VERSION = "0.6"; // version shown in the aplication
 quotaIsCritical = false; // Is quota almost full?
+critical_msg_probability = 0.1; // Probability of showing a quota warning message
 
 /**
  * Defines the Zimlet handler class.
@@ -32,6 +33,28 @@ function zimtransfer_HandlerObject() {
  */
 zimtransfer_HandlerObject.prototype = new ZmZimletBase();
 zimtransfer_HandlerObject.prototype.constructor = zimtransfer_HandlerObject;
+
+/**
+* Check space warnings and show popups if necesary
+*/
+zimtransfer_HandlerObject.prototype.onShowView =
+function(view)
+{
+	// get browser language and initialize locales
+	initLocales(navigator.language);
+
+	// CHECK USER QUOTA
+	var quota = appCtxt.get(ZmSetting.QUOTA);
+	var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
+	var random = Math.random();
+	console.log(random);
+	if ( quota_used/quota > critical_limit && random < critical_msg_probability )
+	{
+		setTimeout(function(){
+			appCtxt.setStatusMsg(CRITICAL_WARNING + " " + CLICK_ON_TAB);
+		}, 5000);
+	}
+}
 
 /**
  * This method gets called by the Zimlet framework each time the application is opened or closed.
