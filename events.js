@@ -46,16 +46,14 @@ function() {
 	$(document).on('click', '#show_heaviest_btn', function(){
 		var _types = new AjxVector();
 		_types.add("CONV");
-		appCtxt.getSearchController().search({userInitiated: true, query: 'smaller:99999MB', sortBy: 'sizeDesc', limit: 20,  offset: 0, types:_types});
+		appCtxt.getSearchController().search({userInitiated: true, query: smaller_query, sortBy: 'sizeDesc', limit: 20,  offset: 0, types:_types}); 
 	});
 
 	$(document).on('click', '#show_oldest_btn', function(){
 		var _types = new AjxVector();
 		_types.add("CONV");
-		var aYearAgo = getAYearAgo();
 		// TODO We need a way to limit the number of results returned by the search.. a limit param doesn't work...
-		appCtxt.getSearchController().search({userInitiated: true, query: 'after:01/01/1900', sortBy: 'dateAsc', types:_types});
-		// var aYearAgo = today.getDate() + '/' + (today.getMonth() + 1) + '/' + (today.getFullYear() - 1);
+		appCtxt.getSearchController().search({userInitiated: true, query: oldest_query, sortBy: 'dateAsc', types:_types});
 	});
 
 	$(document).on('click', '#show_trash_btn', function(){
@@ -129,5 +127,10 @@ function() {
 		tagIds = oldestIds;
 		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
 		console.log(tagIds);
+	});
+
+	$(document).on('click', '#reload_btn', function(){
+		//	Send batch request (reloads contents)
+		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('Batch', 'zimbra');
 	});
 };

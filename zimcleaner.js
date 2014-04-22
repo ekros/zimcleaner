@@ -14,13 +14,18 @@ drafts_limit_per_crit = 5; // drafts items limit percentage (CRITICAL)
 heaviest_limit_per = 7; // heaviest items alarm limit percentage
 heaviest_limit_per_crit = 3; // heaviest items alarm limit percentage (CRITICAL)
 oldest_limit_per = 50; // oldest items alarm limit percentage
-oldest_limit_per_crit = 10; // oldest items alarm limit percentatge (CRITICAL)
+oldest_limit_per_crit = 1; // oldest items alarm limit percentatge (CRITICAL)
 unread_limit = 100; // number of unread messages alarm limit
 critical_limit = 0.95; // critical usage limit
 locale = "en-US"; // default locale
 VERSION = "0.6"; // version shown in the aplication
 quotaIsCritical = false; // Is quota almost full?
 critical_msg_probability = 0.1; // Probability of showing a quota warning message
+// queries
+var today = new Date();
+var yearsAgo = new Date(today.getFullYear() - 2, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
+oldest_query = "before:" + (yearsAgo.getMonth() + 1).toString() + "/" + yearsAgo.getDate() + "/" + yearsAgo.getFullYear();
+smaller_query = "smaller:99999MB";
 
 /**
  * Defines the Zimlet handler class.
@@ -66,27 +71,6 @@ zimtransfer_HandlerObject.prototype.appActive =
 function(appName, active) {
 	switch(appName) {
 		case this._tabAppName: {			
-			if (active) {
-			
-				// get browser language and initialize locales
-				initLocales(navigator.language);
-
-				app = appCtxt.getApp(this._tabAppName); // returns ZmZimletApp
-
-				var toolbar = app.getToolbar(); // returns ZmToolBar
-
-				toolbar.setContent("<span style='color:red'>Zim</span>Cleaner<span class='pull-right'><small>  (version " + VERSION + ")<small></span>");
-
-				var overview = app.getOverview(); // returns ZmOverview
-
-				var controller = appCtxt.getAppController();
-				var appChooser = controller.getAppChooser();
-
-  				// Get root folder and its descendants
-
-				// Batch Request with all the data needed
-				this._submitSOAPRequestJSON('Batch', 'zimbra');
-			}
 			break;
 		}
 	}
@@ -102,6 +86,22 @@ function(appName) {
 	switch(appName) {
 		case this._tabAppName: {
 			// the app is launched, do something
+			// get browser language and initialize locales
+			initLocales(navigator.language);
+
+			app = appCtxt.getApp(this._tabAppName); // returns ZmZimletApp
+
+			var toolbar = app.getToolbar(); // returns ZmToolBar
+
+			toolbar.setContent("<span style='color:red'>Zim</span>Cleaner<span class='pull-right'><small>  (version " + VERSION + ")<small></span>");
+
+			var overview = app.getOverview(); // returns ZmOverview
+
+			var controller = appCtxt.getAppController();
+			var appChooser = controller.getAppChooser();
+
+			// Batch Request with all the data needed
+			this._submitSOAPRequestJSON('Batch', 'zimbra');
 			break;	
 		}	
 	}
@@ -164,13 +164,12 @@ function(type, urn, params) {
 	else if (type == 'SearchHeaviest')
 	{
 		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '20', types: 'conversation', sortBy: 'sizeDesc'}};
-		jsonObj.SearchRequest.query = 'smaller:99999MB';		
+		jsonObj.SearchRequest.query = smaller_query;		
 	}
 	else if (type == 'SearchOldest')
 	{
 		var jsonObj = {SearchRequest:{_jsns:"urn:zimbraMail", limit: '1000', types: 'conversation', sortBy: 'dateAsc'}};
-		// var aYearAgo = getAYearAgo();
-		jsonObj.SearchRequest.query = 'after:01/01/1900';
+		jsonObj.SearchRequest.query = oldest_query;
 	}	
 	else if (type == 'SearchUnread')
 	{
@@ -288,7 +287,7 @@ function(result) {
 			console.log("hl percentage: " + percentage);
 			if (percentage > hl)
 			{
-				body = "<div class='alert'>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
+				body = "<div class='alert'>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' title='" + SHOW_HEAVIEST_TITLE + "' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}
 		}
@@ -308,7 +307,7 @@ function(result) {
 			console.log("ol percentage: " + percentage);
 			if (percentage > ol)
 			{
-				body = "<div class='alert'>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
+				body = "<div class='alert'>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' title='" + SHOW_OLDEST_TITLE + "' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
 				$("#suggestions").append("<strong>" + title + "</strong><br>" + body + "<br>");
 			}			
 		}
@@ -511,7 +510,8 @@ function(result) {
 			labels2 + "<br>" + bars2 + "<br><br>" + 
 			space_details +	"</div><br><br><br><br>" + 
 			// "<div style='background-color: lightgray; border: 1px;'><br>" + clean_list + "</div><br><br>" + 
-			"<div id='suggestions' style='background-color: lightgray; border: 1px;'>" + initialData + "</div>");
+			"<div id='suggestions' style='background-color: lightgray; border: 1px;'>" + initialData + "</div>" + 
+			"<br><button id='reload_btn'><b>" + RELOAD_BUTTON + "</b></button>");
 
 		// effect
 		firstBarEffect();

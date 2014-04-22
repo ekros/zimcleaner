@@ -34,6 +34,7 @@ function initLocales(locale_config)
                 SPAM = "Spam";
                 BRIEFCASE = "Briefcase";
                 OTHER = "Other";
+                RELOAD_BUTTON = "Analyse again";
                 // dialogs
                 CLEAN_TRASH_CONFIRM = "This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?";
                 CLEAN_SPAM_CONFIRM = "This will remove the spam folder contents. Are you sure to continue?";
@@ -41,6 +42,9 @@ function initLocales(locale_config)
                 // tags
                 HEAVIEST_MESSAGES_TAG = "heaviest-messages-";
                 OLDEST_MESSAGES_TAG = "oldest-messages-";
+                // button titles
+                SHOW_HEAVIEST_TITLE = "Show messages ordered by size";
+                SHOW_OLDEST_TITLE = "Show old messages, ordered by date";
         }
         else if (locale_config == "es-ES") // es-ES
         {
@@ -62,7 +66,7 @@ function initLocales(locale_config)
                 SHOW_BRIEFCASE_BUTTON = "Mostrar (maletín)";
                 SPAM_WARNING = "Tus mensajes de correo no deseado (spam) ocupan demasiado espacio";
                 DRAFT_WARNING = "Tus borradores ocupan demasiado espacio";
-		BRIEFCASE_WARNING = "Tu maletín ocupa demasiado espacio.";
+                BRIEFCASE_WARNING = "Tu maletín ocupa demasiado espacio.";
                 USER_QUOTA_TITLE = "Cuota de usuario";
                 OF = "de";
                 SPACE_USAGE = "espacio usado";
@@ -75,6 +79,7 @@ function initLocales(locale_config)
                 SPAM = "Spam";
                 BRIEFCASE = "Maletín";
                 OTHER = "Otros";
+                RELOAD_BUTTON = "Volver a ejecutar análisis";
                 // dialogos
                 CLEAN_TRASH_CONFIRM = "Todos los contenidos de la papelera, includos los correos, contactos, eventos de calendario y documentos del maletín serán eliminados. ¿Desea continuar?";
                 CLEAN_SPAM_CONFIRM = "Todos los contenidos de la carpeta de Correo no deseado serán eliminados. ¿Desea continuar?";
@@ -82,5 +87,8 @@ function initLocales(locale_config)
                 // tags
                 HEAVIEST_MESSAGES_TAG = "mensajes-pesados-";
                 OLDEST_MESSAGES_TAG = "mensajes-antiguos-";
+                // button titles
+                SHOW_HEAVIEST_TITLE = "Mostrar mensajes ordenados por tamaño";
+                SHOW_OLDEST_TITLE = "Mostrar mensajes antiguos, ordenados por fecha";
         }
 }

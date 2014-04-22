@@ -66,12 +66,18 @@ function secondBarEffect()
 	$(".bar2").show("slow");
 }
 
-// returns the date a year ago
-function getAYearAgo()
+// returns the date X years ago
+function getYearsAgo(years)
 {
        var today = new Date();
-       var aYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
-       return aYearAgo;
+       var yearsAgo = new Date(today.getFullYear() - years, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
+       return yearsAgo;
+};
+
+function toDateStr(date)
+{
+	var month = date.getMonth() + 1;
+	return date.getDate() + "/" + month + "/" + date.getFullYear();
 };
 
 // transforms a size in bytes to other dimension
