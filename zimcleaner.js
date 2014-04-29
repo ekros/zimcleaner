@@ -45,14 +45,11 @@ zimtransfer_HandlerObject.prototype.constructor = zimtransfer_HandlerObject;
 zimtransfer_HandlerObject.prototype.onShowView =
 function(view)
 {
-	// get browser language and initialize locales
-	initLocales(navigator.language);
-
 	// CHECK USER QUOTA
 	var quota = appCtxt.get(ZmSetting.QUOTA);
 	var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
 	var random = Math.random();
-	console.log(random);
+	// console.log(random);
 	if ( quota_used/quota > critical_limit && random < critical_msg_probability )
 	{
 		setTimeout(function(){
@@ -87,7 +84,15 @@ function(appName) {
 		case this._tabAppName: {
 			// the app is launched, do something
 			// get browser language and initialize locales
-			initLocales(navigator.language);
+			// get browser language and initialize locales
+			if (navigator.appName.indexOf("Explorer") > -1) // Is the user using IE? OMG!
+			{
+				initLocales(navigator.browserLanguage);
+			}
+			else // The other supported browsers (Chrome and Firefox)
+			{
+				initLocales(navigator.language);
+			}
 
 			app = appCtxt.getApp(this._tabAppName); // returns ZmZimletApp
 
@@ -258,12 +263,10 @@ function(result) {
 		response = result.getResponse().GetMailboxResponse;
 
 		var mailbox_size = response.used;
-		alert(mailbox_size);
 	}
 	else if (result.getResponse().GetMailboxMetadataResponse != null)
 	{
 		response = result.getResponse().GetMailboxMetadataResponse;
-		alert(response.meta);
 	}
 	else if (result.getResponse().SearchResponse != null)
 	{
@@ -283,8 +286,8 @@ function(result) {
 			// trigger condition: 20 heaviest messages take up more than x% of space
 			// depending on the current space usage
 			var hl = quotaIsCritical ? heaviest_limit_per_crit : heaviest_limit_per
-			console.log("hl: " + hl);
-			console.log("hl percentage: " + percentage);
+			// console.log("hl: " + hl);
+			// console.log("hl percentage: " + percentage);
 			if (percentage > hl)
 			{
 				body = "<div class='alert'>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' title='" + SHOW_HEAVIEST_TITLE + "' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
@@ -303,8 +306,8 @@ function(result) {
 			// TODO add the following extra condition: these messages must be older than a year...
 			// depending on the current space usage
 			var ol = quotaIsCritical ? oldest_limit_per_crit : oldest_limit_per
-			console.log("ol: " + ol);
-			console.log("ol percentage: " + percentage);
+			// console.log("ol: " + ol);
+			// console.log("ol percentage: " + percentage);
 			if (percentage > ol)
 			{
 				body = "<div class='alert'>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' title='" + SHOW_OLDEST_TITLE + "' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
@@ -334,10 +337,13 @@ function(result) {
 	else if (result.getResponse().ConvActionResponse != null)
 	{
 		// hidden iframe triggers download
-		console.log("tagName2: " + tagName);
+		// console.log("tagName2: " + tagName);
+		var colon = "";
+		if (location.port.length > 0) colon = ":";
 		$(".DwtComposite").append("<iframe id='downloadFrame' style='display:none'></iframe>");
 		var iframe = document.getElementById("downloadFrame");
-		iframe.src = "https://localhost/home/" + appCtxt.getUsername() + "/?fmt=zip&query=tag:" + tagName;
+		// cannot use location.origin because is not compatible with IE :_(
+		iframe.src = location.protocol + "//" + location.host + colon + location.port + "/home/" + appCtxt.getUsername() + "/?fmt=zip&query=tag:" + tagName;
 	}
 	else if (result.getResponse().BatchResponse != null)
 	{
@@ -474,31 +480,31 @@ function(result) {
 		if (quotaIsCritical) initialData += "<br><strong style='color: red'>" + CRITICAL_WARNING + "</strong><br><br>";
 		// TRASH LIMIT WARNING
 		var tl = quotaIsCritical ? trash_limit_per_crit : trash_limit_per
-		console.log("tl: " + tl);
-		console.log("tl percentage: " + trash_per);
+		// console.log("tl: " + tl);
+		// console.log("tl percentage: " + trash_per);
 		if (trash_per >= tl)
 		{
 			initialData += "<div class='alert'>" + TRASH_WARNING + "&nbsp<button id='show_trash_btn' class='btn btn-mini'>" + SHOW_MESSAGES_BUTTON + "</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>" + SHOW_BRIEFCASE_BUTTON + "</button><button id='clean_trash_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		var dl = quotaIsCritical ? drafts_limit_per_crit : drafts_limit_per
-		console.log("dl: " + dl);
-		console.log("dl percentage: " + drafts_per);
+		// console.log("dl: " + dl);
+		// console.log("dl percentage: " + drafts_per);
 		if (drafts_per >= dl)
 		{
 			initialData += "<div class='alert'>" + DRAFT_WARNING + "&nbsp<button id='show_drafts_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button><button id='clean_drafts_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		// SPAM LIMIT WARNING
 		var sl = quotaIsCritical ? spam_limit_per_crit : spam_limit_per
-		console.log("sl: " + sl);
-		console.log("sl percentage: " + junk_per);
+		// console.log("sl: " + sl);
+		// console.log("sl percentage: " + junk_per);
 		if (junk_per >= sl)
 		{
 			initialData += "<div class='alert'>" + SPAM_WARNING + "&nbsp<button id='show_spam_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		// BRIEFCASE LIMIT WARNING
 		var bl = quotaIsCritical ? briefcase_limit_per_crit : briefcase_limit_per
-		console.log("bl: " + bl);
-		console.log("bl percentage: " + briefcase_per);
+		// console.log("bl: " + bl);
+		// console.log("bl percentage: " + briefcase_per);
 		if (briefcase_per >= bl)
 		{
 			initialData += "<div class='alert'>" + BRIEFCASE_WARNING + "&nbsp<button id='show_briefcase_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button></div>";

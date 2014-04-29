@@ -27,6 +27,20 @@ function getSpaceDetails(name, folders, total_size)
 	    ordered_folders[key] = value;
 	}
 
+	// Object.keys is not compatible with IE9 and older versions. This is a reimplementation.
+	// see http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
+	if (navigator.appName.indexOf("Explorer") > -1)
+	{
+		Object.keys = Object.keys || function(o) {
+		    var result = []; 
+		    for(var name in o) { 
+		        if (o.hasOwnProperty(name)) 
+		          result.push(name); 
+		    } 
+		    return result; 
+		};
+	}
+
 	// fill labels and bars with data
 	for (var i in Object.keys(ordered_folders))
 	{
