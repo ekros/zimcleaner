@@ -50,8 +50,15 @@ function getSpaceDetails(name, folders, total_size)
 		}
 		else
 		{
-			if (i == 0) var folder_name = "/"; // root folder
-			else var folder_name = Object.keys(ordered_folders)[i].slice(Object.keys(ordered_folders)[i].indexOf("/", 1)).split(' ').join('_');
+			if (i == 0) 
+			{
+				var folder_name = "/"; // root folder
+			}
+			else 
+			{
+				var folder_name = Object.keys(ordered_folders)[i].replace("/Inbox/", "").replace("/Trash/", "").replace("/Drafts/", "").replace("/Sent/", "").replace("/Junk/", "").replace("/Briefcase/", "");
+			}
+			console.log(folder_name);
 			var folder_label = folder_name + " " + bytesToSize(ordered_folders[Object.keys(ordered_folders)[i]]) + " (" + ((ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100).toFixed(1) + "%)";
 			labels += " | <span style='color: " + colors[i] + "'>" + folder_label + "</span>";
 			bars += "<div class='bar2' title='" + folder_label + "' style='float: left; width: " + (ordered_folders[Object.keys(ordered_folders)[i]]/total_size)*100 + "%; height: 20px; background-color:" + colors[i] + "; border: 0px'></div>";

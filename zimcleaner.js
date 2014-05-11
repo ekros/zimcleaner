@@ -21,6 +21,7 @@ locale = "en-US"; // default locale
 VERSION = "0.6"; // version shown in the aplication
 quotaIsCritical = false; // Is quota almost full?
 critical_msg_probability = 0.1; // Probability of showing a quota warning message
+locales_loaded = false;
 // queries
 var today = new Date();
 var yearsAgo = new Date(today.getFullYear() - 2, today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds());
@@ -45,12 +46,24 @@ zimtransfer_HandlerObject.prototype.constructor = zimtransfer_HandlerObject;
 zimtransfer_HandlerObject.prototype.onShowView =
 function(view)
 {
+	// get browser language and initialize locales
+	if (!locales_loaded)
+	{
+		if (navigator.appName.indexOf("Explorer") > -1) // Is the user using IE? OMG!
+		{
+			initLocales(navigator.browserLanguage);
+		}
+		else // The other supported browsers (Chrome and Firefox)
+		{
+			initLocales(navigator.language);
+		}
+	}
+	locales_loaded = true;
 	// CHECK USER QUOTA
 	var quota = appCtxt.get(ZmSetting.QUOTA);
 	var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
 	var random = Math.random();
-	// console.log(random);
-	if ( quota_used/quota > critical_limit && random < critical_msg_probability )
+	if ( quota != 0 && quota_used/quota > critical_limit && random < critical_msg_probability )
 	{
 		setTimeout(function(){
 			appCtxt.setStatusMsg(CRITICAL_WARNING + " " + CLICK_ON_TAB);
@@ -83,16 +96,6 @@ function(appName) {
 	switch(appName) {
 		case this._tabAppName: {
 			// the app is launched, do something
-			// get browser language and initialize locales
-			// get browser language and initialize locales
-			if (navigator.appName.indexOf("Explorer") > -1) // Is the user using IE? OMG!
-			{
-				initLocales(navigator.browserLanguage);
-			}
-			else // The other supported browsers (Chrome and Firefox)
-			{
-				initLocales(navigator.language);
-			}
 
 			app = appCtxt.getApp(this._tabAppName); // returns ZmZimletApp
 
