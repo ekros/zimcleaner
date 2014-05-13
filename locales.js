@@ -35,6 +35,13 @@ function initLocales(locale_config)
         BRIEFCASE = "Briefcase";
         OTHER = "Other";
         RELOAD_BUTTON = "Analyse again";
+        BRIEFCASE_STATUS_MSG = "Briefcase files ordered by size";
+        DRAFTS_STATUS_MSG = "Drafts ordered by date";
+        SPAM_STATUS_MSG = "Spam folder contents";
+        TRASH_BRIEFCASE_STATUS_MSG = "Briefcase elements in the trash";
+        TRASH_STATUS_MSG = "Trash emails";
+        OLDEST_STATUS_MSG = "Messages ordered by date (oldest first)";
+        HEAVIEST_STATUS_MSG = "Messages ordered by size (heaviest first)";
         // dialogs
         CLEAN_TRASH_CONFIRM = "This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?";
         CLEAN_SPAM_CONFIRM = "This will remove the spam folder contents. Are you sure to continue?";
@@ -80,6 +87,13 @@ function initLocales(locale_config)
         BRIEFCASE = "Maletín";
         OTHER = "Otros";
         RELOAD_BUTTON = "Volver a ejecutar análisis";
+        BRIEFCASE_STATUS_MSG = "Elementos del maletín ordenados por tamaño";
+        DRAFTS_STATUS_MSG = "Borradores ordenados por fecha";
+        SPAM_STATUS_MSG = "Contenido de la carpeta de correo no deseado";
+        TRASH_BRIEFCASE_STATUS_MSG = "Elementos del maletín en la papelera";
+        TRASH_STATUS_MSG = "Correos en la papelera";
+        OLDEST_STATUS_MSG = "Mensajes ordenados por fecha (más viejos primeros)";
+        HEAVIEST_STATUS_MSG = "Mensajes ordenados por tamaño (más pesados primero)";
         // dialogos
         CLEAN_TRASH_CONFIRM = "Todos los contenidos de la papelera, includos los correos, contactos, eventos de calendario y documentos del maletín serán eliminados. ¿Desea continuar?";
         CLEAN_SPAM_CONFIRM = "Todos los contenidos de la carpeta de Correo no deseado serán eliminados. ¿Desea continuar?";

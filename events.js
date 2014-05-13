@@ -47,6 +47,9 @@ function() {
 		var _types = new AjxVector();
 		_types.add("CONV");
 		appCtxt.getSearchController().search({userInitiated: true, query: smaller_query, sortBy: 'sizeDesc', limit: 20,  offset: 0, types:_types}); 
+		setTimeout(function(){
+			appCtxt.setStatusMsg(HEAVIEST_STATUS_MSG);
+		}, 1000);
 	});
 
 	$(document).on('click', '#show_oldest_btn', function(){
@@ -54,36 +57,54 @@ function() {
 		_types.add("CONV");
 		// TODO We need a way to limit the number of results returned by the search.. a limit param doesn't work...
 		appCtxt.getSearchController().search({userInitiated: true, query: oldest_query, sortBy: 'dateAsc', types:_types});
+		setTimeout(function(){
+			appCtxt.setStatusMsg(OLDEST_STATUS_MSG);
+		}, 1000);
 	});
 
 	$(document).on('click', '#show_trash_btn', function(){
 		var _types = new AjxVector();
 		_types.add("CONV");
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:trash', sortBy: 'dateAsc', types:_types});
+		setTimeout(function(){
+			appCtxt.setStatusMsg(TRASH_STATUS_MSG);
+		}, 1000);
 	});
 
 	$(document).on('click', '#show_trash_briefcase_btn', function(){
 		var _types = new AjxVector();
 		_types.add("BRIEFCASE_ITEM");
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:trash', sortBy: 'dateAsc', types:_types});
+		setTimeout(function(){
+			appCtxt.setStatusMsg(TRASH_BRIEFCASE_STATUS_MSG);
+		}, 1000);
 	});
 
 	$(document).on('click', '#show_spam_btn', function(){
 		var _types = new AjxVector();
 		_types.add("CONV");
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:junk', sortBy: 'dateAsc', types:_types});
+		setTimeout(function(){
+			appCtxt.setStatusMsg(SPAM_STATUS_MSG);
+		}, 1000);
 	});	
 
 	$(document).on('click', '#show_drafts_btn', function(){
 		var _types = new AjxVector();
 		_types.add("CONV");
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:drafts', sortBy: 'dateAsc', types:_types});
+		setTimeout(function(){
+			appCtxt.setStatusMsg(DRAFTS_STATUS_MSG);
+		}, 1000);
 	});
 
 	$(document).on('click', '#show_briefcase_btn', function(){
 		var _types = new AjxVector();
 		_types.add("BRIEFCASE_ITEM");
 		appCtxt.getSearchController().search({userInitiated: true, query: 'under:briefcase', sortBy: 'sizeDesc', types:_types});
+		setTimeout(function(){
+			appCtxt.setStatusMsg(BRIEFCASE_STATUS_MSG);
+		}, 1000);
 	});
 
 	$(document).on('click', '#clean_trash_btn', function(){
