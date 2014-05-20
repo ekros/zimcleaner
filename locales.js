@@ -52,6 +52,11 @@ function initLocales(locale_config)
         // button titles
         SHOW_HEAVIEST_TITLE = "Show messages ordered by size";
         SHOW_OLDEST_TITLE = "Show old messages, ordered by date";
+        // random default suggestion
+        DEFAULT_SUGGESTIONS = ["If not enough space is freed with ZimCleaner, you can download email folders in Preferences > Import/Export.", 
+        "You can export emails in ZIP or TGZ format. The exported file itself contains EML files that can be opened with email clients like Thunderbird or Outlook. You can recover them from Preferences > Import/Export, selecting the compressed file.",
+        "Delete the trash contents regularly", 
+        "Classify all the incoming messages you can in subfolders and remove emails you don't need."];  
     }
     else if (locale_config.indexOf("es") > -1) // es-ES
     {
@@ -104,5 +109,10 @@ function initLocales(locale_config)
         // button titles
         SHOW_HEAVIEST_TITLE = "Mostrar mensajes ordenados por tamaño";
         SHOW_OLDEST_TITLE = "Mostrar mensajes antiguos, ordenados por fecha";
+        // random default suggestion
+        DEFAULT_SUGGESTIONS = ["Si no consigue liberar suficiente espacio con ZimCleaner puede descargarse carpetas de correo en Preferencias > Importar/Exportar.", 
+        "Al exportar correos, obtendrá un fichero comprimido en formato ZIP o TGZ, que contiene ficheros EML que pueden ser abiertos con una aplicación de correo como Outlook o Thunderbird. Para recuperarlos en Zimbra debe importar el mismo fichero desde Preferencias > Importar/Exportar.", 
+        "Vacíe el contenido de la papelera regularmente", 
+        "Intente clasificar todo el correo entrante que pueda y eliminar los que no vaya a necesitar."];
     }
 }

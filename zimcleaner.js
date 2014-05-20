@@ -479,6 +479,8 @@ function(result) {
 
 		// INITIAL DATA
 		var initialData = "<strong>" + SUGGESTIONS_TITLE + "</strong><br>";
+		// RANDOM DEFAULT SUGGESTION
+		initialData += "<br>" + DEFAULT_SUGGESTIONS[Math.floor(Math.random()*DEFAULT_SUGGESTIONS.length)] + "<br>";
 		// CRITICAL WARNING
 		if (quotaIsCritical) initialData += "<br><strong style='color: red'>" + CRITICAL_WARNING + "</strong><br><br>";
 		// TRASH LIMIT WARNING
