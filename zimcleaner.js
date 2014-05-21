@@ -18,7 +18,7 @@ oldest_limit_per_crit = 1; // oldest items alarm limit percentatge (CRITICAL)
 unread_limit = 100; // number of unread messages alarm limit
 critical_limit = 0.95; // critical usage limit
 locale = "en-US"; // default locale
-VERSION = "0.6"; // version shown in the aplication
+VERSION = "0.7"; // version shown in the aplication
 quotaIsCritical = false; // Is quota almost full?
 critical_msg_probability = 0.1; // Probability of showing a quota warning message
 locales_loaded = false;
@@ -60,10 +60,10 @@ function(view)
 	}
 	locales_loaded = true;
 	// CHECK USER QUOTA
-	var quota = appCtxt.get(ZmSetting.QUOTA);
-	var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
+	// var quota = appCtxt.get(ZmSetting.QUOTA);
+	// var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
 	var random = Math.random();
-	if ( quota != 0 && quota_used/quota > critical_limit && random < critical_msg_probability )
+	if ( quotaIsCritical && random < critical_msg_probability )
 	{
 		setTimeout(function(){
 			appCtxt.setStatusMsg(CRITICAL_WARNING + " " + CLICK_ON_TAB);
@@ -472,7 +472,7 @@ function(result) {
 		// USER QUOTA
 		var quota = appCtxt.get(ZmSetting.QUOTA);
 		var quota_used = appCtxt.get(ZmSetting.QUOTA_USED);
-		if ( quota_used/quota > critical_limit )
+		if ( quota != 0 && quota_used/quota > critical_limit )
 		{
 			quotaIsCritical = true;
 		}

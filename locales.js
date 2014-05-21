@@ -46,6 +46,7 @@ function initLocales(locale_config)
         CLEAN_TRASH_CONFIRM = "This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?";
         CLEAN_SPAM_CONFIRM = "This will remove the spam folder contents. Are you sure to continue?";
         CLEAN_DRAFTS_CONFIRM = "This will remove the drafts folder contents. Are you sure to continue?";
+        EXPORT_AND_TAG_CONFIRM = "This action will download a compressed file which you can store as a backup (it can be imported in Preferences > Import/Export). The downloaded emails will be tagged. You can delete them when the download finish. Do you want to continue?";
         // tags
         HEAVIEST_MESSAGES_TAG = "heaviest-messages-";
         OLDEST_MESSAGES_TAG = "oldest-messages-";
@@ -56,7 +57,7 @@ function initLocales(locale_config)
         DEFAULT_SUGGESTIONS = ["If not enough space is freed with ZimCleaner, you can download email folders in Preferences > Import/Export.", 
         "You can export emails in ZIP or TGZ format. The exported file itself contains EML files that can be opened with email clients like Thunderbird or Outlook. You can recover them from Preferences > Import/Export, selecting the compressed file.",
         "Delete the trash contents regularly", 
-        "Classify all the incoming messages you can in subfolders and remove emails you don't need."];  
+        "Classify all the incoming messages you can in subfolders and remove emails you don't need."];
     }
     else if (locale_config.indexOf("es") > -1) // es-ES
     {
@@ -103,6 +104,7 @@ function initLocales(locale_config)
         CLEAN_TRASH_CONFIRM = "Todos los contenidos de la papelera, includos los correos, contactos, eventos de calendario y documentos del maletín serán eliminados. ¿Desea continuar?";
         CLEAN_SPAM_CONFIRM = "Todos los contenidos de la carpeta de Correo no deseado serán eliminados. ¿Desea continuar?";
         CLEAN_DRAFTS_CONFIRM = "This will remove the drafts folder contents. Are you sure to continue?";
+        EXPORT_AND_TAG_CONFIRM = "Esta acción descargará un archivo comprimido que puedes guardar como copia de seguridad. Los correos que hayan sido descargados de esta manera serán etiquetados para que pueda eliminarlos cuando la descarga termine. Quiere continuar?";
         // tags
         HEAVIEST_MESSAGES_TAG = "mensajes-pesados-";
         OLDEST_MESSAGES_TAG = "mensajes-antiguos-";

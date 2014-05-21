@@ -132,22 +132,30 @@ function() {
 	});
 
 	$(document).on('click', '#export_heaviest_btn', function(){
-		var today = new Date();
-		tagName = HEAVIEST_MESSAGES_TAG + today.getFullYear() + "/" + today.getMonth() + "/" + today.getDate() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
-		// console.log("tagName: " + tagName);
-		// Create tag
-		tagIds = heaviestIds;
-		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
+		var c = confirm(EXPORT_AND_TAG_CONFIRM);
+		if (c)
+		{
+			var today = new Date();
+			tagName = HEAVIEST_MESSAGES_TAG + today.getFullYear() + "/" + today.getMonth() + "/" + today.getDate() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
+			// console.log("tagName: " + tagName);
+			// Create tag
+			tagIds = heaviestIds;
+			zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);			
+		}
 	});
 
 	$(document).on('click', '#export_oldest_btn', function(){
-		var today = new Date();
-		tagName = OLDEST_MESSAGES_TAG + today.getFullYear() + "/" + today.getMonth() + "/" + today.getDate() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
-		// console.log("tagName: " + tagName);
-		// Create tag
-		tagIds = oldestIds;
-		zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
-		// console.log(tagIds);
+		var c = confirm(EXPORT_AND_TAG_CONFIRM);
+		if (c)
+		{		
+			var today = new Date();
+			tagName = OLDEST_MESSAGES_TAG + today.getFullYear() + "/" + today.getMonth() + "/" + today.getDate() + '-' + today.getHours() + today.getMinutes() + today.getSeconds();
+			// console.log("tagName: " + tagName);
+			// Create tag
+			tagIds = oldestIds;
+			zimtransfer_HandlerObject.prototype._submitSOAPRequestJSON('CreateTag', 'zimbraMail', tagName);
+			// console.log(tagIds);
+		}
 	});
 
 	$(document).on('click', '#reload_btn', function(){
