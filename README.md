@@ -1,2 +1,2 @@
 # README
-ZimCleaner
+Zimcleaner zimlet. It helps you to keep your mailbox clean.
