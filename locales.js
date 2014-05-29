@@ -1,3 +1,19 @@
+/*
+ * Copyright [2014] [Eric Ros] ericrosbh@gmail.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 
 function initLocales(locale_config)
 {
@@ -35,6 +51,7 @@ function initLocales(locale_config)
         BRIEFCASE = "Briefcase";
         OTHER = "Other";
         RELOAD_BUTTON = "Analyse again";
+        DONATE_INFO = "Did you find this software useful?";
         // dialogs
         CLEAN_TRASH_CONFIRM = "This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?";
         CLEAN_SPAM_CONFIRM = "This will remove the spam folder contents. Are you sure to continue?";
@@ -80,6 +97,7 @@ function initLocales(locale_config)
         BRIEFCASE = "Maletín";
         OTHER = "Otros";
         RELOAD_BUTTON = "Volver a ejecutar análisis";
+        DONATE_INFO = "Encontraste útil este software?";
         // dialogos
         CLEAN_TRASH_CONFIRM = "Todos los contenidos de la papelera, includos los correos, contactos, eventos de calendario y documentos del maletín serán eliminados. ¿Desea continuar?";
         CLEAN_SPAM_CONFIRM = "Todos los contenidos de la carpeta de Correo no deseado serán eliminados. ¿Desea continuar?";

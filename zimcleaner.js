@@ -1,3 +1,20 @@
+/*
+ * Copyright [2014] [Eric Ros] ericrosbh@gmail.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+ 
 // globals
 tagIds = new Array();
 oldestIds = new Array(); // comma separated ids of oldest messages
@@ -18,7 +35,7 @@ oldest_limit_per_crit = 1; // oldest items alarm limit percentatge (CRITICAL)
 unread_limit = 100; // number of unread messages alarm limit
 critical_limit = 0.95; // critical usage limit
 locale = "en-US"; // default locale
-VERSION = "0.6"; // version shown in the aplication
+VERSION = "0.7 -beta-"; // version shown in the aplication
 quotaIsCritical = false; // Is quota almost full?
 critical_msg_probability = 0.1; // Probability of showing a quota warning message
 locales_loaded = false;
@@ -101,7 +118,17 @@ function(appName) {
 
 			var toolbar = app.getToolbar(); // returns ZmToolBar
 
-			toolbar.setContent("<span style='color:red'>Zim</span>Cleaner<span class='pull-right'><small>  (version " + VERSION + ")<small></span>");
+			toolbar.setContent("<span style='color:red'><b>Zim</b></span><b>Cleaner</b><span class='pull-right'><small>  (version " + VERSION + ")</small></span>" +
+				" with &#10084 by Eric Ros &copy " + new Date().getFullYear() + 
+				"<span style='float: right'>" + DONATE_INFO +
+				"<form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_blank'>" +
+				"<input type='hidden' name='cmd' value='_s-xclick'>" +
+				"<input type='hidden' name='hosted_button_id' value='KPQE6CD4YLRDA'>" +
+				//"<input type='button' name='submit' value='Donate'>" +
+				"<input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif' width='50' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>" +
+				"<img alt=' border='0' src='https://www.paypalobjects.com/es_ES/i/scr/pixel.gif' width='1' height='1'>" +
+				"</form>" +
+				"</span>");
 
 			var overview = app.getOverview(); // returns ZmOverview
 
