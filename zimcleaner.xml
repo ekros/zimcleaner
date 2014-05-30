@@ -1,4 +1,4 @@
-<zimlet name="zimcleaner" version="0.6" description="Zimcleaner zimlet. It helps you to keep your mailbox clean.">
+<zimlet name="zimcleaner" version="0.6" description="Zimcleaner zimlet. It helps you keep your mailbox clean.">
   <include>jquery-1.10.1.min.js</include>
   <include>locales.js</include>
   <include>functions.js</include>
