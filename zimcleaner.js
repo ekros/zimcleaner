@@ -507,8 +507,6 @@ function(result) {
 		initialData += "<br>" + DEFAULT_SUGGESTIONS[Math.floor(Math.random()*DEFAULT_SUGGESTIONS.length)] + "<br>";
 		// CRITICAL WARNING
 		if (quotaIsCritical) initialData += "<br><strong style='color: red'>" + CRITICAL_WARNING + "</strong><br><br>";
-		// DEFAULT SUGGESTION
-		initialData += DEFAULT_SUGGESTIONS[Math.floor(Math.random()*3)] + "<br><br>";
 		// TRASH LIMIT WARNING
 		var tl = quotaIsCritical ? trash_limit_per_crit : trash_limit_per
 		if (trash_per >= tl)
