@@ -24,7 +24,7 @@ tagName = "";
 spam_limit_per = 5; // spam (junk) alarm limit percentage
 spam_limit_per_crit = 2.5; // spam (junk) alarm limit percentage (CRITICAL)
 trash_limit_per = 10; // trash alarm limit percentage
-trash_limit_per_crit = 5; // trash alarm limit percentage (CRITICAL)
+trash_limit_per_crit = 1; // trash alarm limit percentage (CRITICAL)
 briefcase_limit_per = 10; // briefcase alarm limit percentage
 briefcase_limit_per_crit = 5; // briefcase alarm limit percentage (CRITICAL)
 drafts_limit_per = 10; // drafts items limit percentage
@@ -119,7 +119,22 @@ function(appName) {
 
 			var toolbar = app.getToolbar(); // returns ZmToolBar
 
-			toolbar.setContent("<span style='color:red'>Zim</span>Cleaner<span class='pull-right'><small>  (version " + VERSION + ")<small></span>");
+			// PLEASE READ THIS BEFORE MODIFYING THIS CODE ****************************************************************************
+			// Feel free to modify this code and remove the 'donate' button. But...
+			// The aim of this button is to allow the users of your company collaborate with the project (and help keep it free).
+			// This software is downloaded by system administrators. The number of potential donations from them are not enough to offer this
+			// software as donationware (free but accepting donations). This is why I'm showing this button to the users.
+			toolbar.setContent("<span style='color:red'><b>Zim</b></span><b>Cleaner</b><span class='pull-right'><small>  (version " + VERSION + ")</small></span>" +
+				" with &#10084 by Eric Ros &copy " + new Date().getFullYear() + 
+				"<span style='float: right'>" + DONATE_INFO +
+				"<form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_blank'>" +
+				"<input type='hidden' name='cmd' value='_s-xclick'>" +
+				"<input type='hidden' name='hosted_button_id' value='KPQE6CD4YLRDA'>" +
+				"<input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif' width='50' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!'>" +
+				"<img alt=' border='0' src='https://www.paypalobjects.com/es_ES/i/scr/pixel.gif' width='1' height='1'>" +
+				"</form>" +
+				"</span>");
+			// ************************************************************************************************************************
 
 			var overview = app.getOverview(); // returns ZmOverview
 
@@ -231,7 +246,6 @@ function(type, urn, params) {
 };
 
 var inboxRequest = function() {
-
 	var jsonObj = {GetFolderRequest:{_jsns:"urn:zimbraMail"}};
 	request = jsonObj.GetFolderRequest;
 	request.GetFolderRequest = {_jsns:"urn:zimbraMail", path: "/Inbox"};
@@ -255,7 +269,6 @@ var inboxRequest = function() {
  */
 zimtransfer_HandlerObject.prototype._handleSOAPResponseJSON =
 function(result) {
-
 	if (result.isException()) {
 		// do something with exception
 		var exception = result.getException();
@@ -273,7 +286,7 @@ function(result) {
 	}
 	else if (result.getResponse().FolderActionResponse != null)
 	{
-		appCtxt.setStatusMsg('Acción realizada con éxito');
+		appCtxt.setStatusMsg(ACTION_SUCCESSFUL);
 	}
 	else if (result.getResponse().GetAccountInfoResponse != null)
 	{
@@ -307,8 +320,6 @@ function(result) {
 			// trigger condition: 20 heaviest messages take up more than x% of space
 			// depending on the current space usage
 			var hl = quotaIsCritical ? heaviest_limit_per_crit : heaviest_limit_per
-			// console.log("hl: " + hl);
-			// console.log("hl percentage: " + percentage);
 			if (percentage > hl)
 			{
 				body = "<div class='alert'>" + HEAVIEST_WARNING + "&nbsp<button id='show_heaviest_btn' title='" + SHOW_HEAVIEST_TITLE + "' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_heaviest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + HEAVIEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
@@ -327,8 +338,6 @@ function(result) {
 			// TODO add the following extra condition: these messages must be older than a year...
 			// depending on the current space usage
 			var ol = quotaIsCritical ? oldest_limit_per_crit : oldest_limit_per
-			// console.log("ol: " + ol);
-			// console.log("ol percentage: " + percentage);
 			if (percentage > ol)
 			{
 				body = "<div class='alert'>" + OLDEST_WARNING + "&nbsp<button id='show_oldest_btn' title='" + SHOW_OLDEST_TITLE + "' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='export_oldest_btn' class='btn btn-mini'>" + EXPORT_AND_TAG_BUTTON + "</button><span class='icon icon-question-sign' title='" + OLDEST_EXPORT_AND_TAG_TOOLTIP + "'></span></div>";
@@ -358,7 +367,6 @@ function(result) {
 	else if (result.getResponse().ConvActionResponse != null)
 	{
 		// hidden iframe triggers download
-		// console.log("tagName2: " + tagName);
 		var colon = "";
 		if (location.port.length > 0) colon = ":";
 		$(".DwtComposite").append("<iframe id='downloadFrame' style='display:none'></iframe>");
@@ -386,7 +394,6 @@ function(result) {
 		junk_folder_names = {};
 		briefcase_folder_names = {};
 		other_folder_names = {};
-
 
 		//called with every property and it's value
 		function process(key,value) {
@@ -449,7 +456,6 @@ function(result) {
 		//that's all... no magic, no bloated framework
 		traverse(response.GetFolderResponse[0].folder[0].folder, process);
 
-		// TODO show total space versus available space in the account
 		var inbox_per = (inbox_size/total_size)*100;
 		var trash_per = (trash_size/total_size)*100;
 		var drafts_per = (drafts_size/total_size)*100;
@@ -501,33 +507,27 @@ function(result) {
 		initialData += "<br>" + DEFAULT_SUGGESTIONS[Math.floor(Math.random()*DEFAULT_SUGGESTIONS.length)] + "<br>";
 		// CRITICAL WARNING
 		if (quotaIsCritical) initialData += "<br><strong style='color: red'>" + CRITICAL_WARNING + "</strong><br><br>";
+		// DEFAULT SUGGESTION
+		initialData += DEFAULT_SUGGESTIONS[Math.floor(Math.random()*3)] + "<br><br>";
 		// TRASH LIMIT WARNING
 		var tl = quotaIsCritical ? trash_limit_per_crit : trash_limit_per
-		// console.log("tl: " + tl);
-		// console.log("tl percentage: " + trash_per);
 		if (trash_per >= tl)
 		{
 			initialData += "<div class='alert'>" + TRASH_WARNING + "&nbsp<button id='show_trash_btn' class='btn btn-mini'>" + SHOW_MESSAGES_BUTTON + "</button>&nbsp<button id='show_trash_briefcase_btn' class='btn btn-mini'>" + SHOW_BRIEFCASE_BUTTON + "</button><button id='clean_trash_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		var dl = quotaIsCritical ? drafts_limit_per_crit : drafts_limit_per
-		// console.log("dl: " + dl);
-		// console.log("dl percentage: " + drafts_per);
 		if (drafts_per >= dl)
 		{
 			initialData += "<div class='alert'>" + DRAFT_WARNING + "&nbsp<button id='show_drafts_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button><button id='clean_drafts_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		// SPAM LIMIT WARNING
 		var sl = quotaIsCritical ? spam_limit_per_crit : spam_limit_per
-		// console.log("sl: " + sl);
-		// console.log("sl percentage: " + junk_per);
 		if (junk_per >= sl)
 		{
 			initialData += "<div class='alert'>" + SPAM_WARNING + "&nbsp<button id='show_spam_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button>&nbsp<button id='clean_spam_btn' class='btn btn-mini'>" + CLEAN_BUTTON + "</button></div>";
 		}
 		// BRIEFCASE LIMIT WARNING
 		var bl = quotaIsCritical ? briefcase_limit_per_crit : briefcase_limit_per
-		// console.log("bl: " + bl);
-		// console.log("bl percentage: " + briefcase_per);
 		if (briefcase_per >= bl)
 		{
 			initialData += "<div class='alert'>" + BRIEFCASE_WARNING + "&nbsp<button id='show_briefcase_btn' class='btn btn-mini'>" + SHOW_BUTTON + "</button></div>";
@@ -551,8 +551,7 @@ function(result) {
 			$("#z_shell").css("overflow-y", "hidden");
 		});
 
-		// -------------------------------------------------------------------------------------------------
-		// send search requests
+		// send search requests ----------------------------------------------------------------------------
 		this._submitSOAPRequestJSON('SearchHeaviest', 'zimbra');
 		this._submitSOAPRequestJSON('SearchOldest', 'zimbra');
 		this._submitSOAPRequestJSON('SearchUnread', 'zimbra');
@@ -572,9 +571,7 @@ var inboxResponseJSON = function(result) {
  */
 zimtransfer_HandlerObject.prototype._handleSOAPErrorResponseJSON =
 function(ex) {
-
 	var errorMsg = ex.getErrorMsg(); // the error message
 	var dump = ex.dump(); // the complete error dump
-
 };
 
