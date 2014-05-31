@@ -23,7 +23,7 @@ tagName = "";
 spam_limit_per = 5; // spam (junk) alarm limit percentage
 spam_limit_per_crit = 2.5; // spam (junk) alarm limit percentage (CRITICAL)
 trash_limit_per = 10; // trash alarm limit percentage
-trash_limit_per_crit = 5; // trash alarm limit percentage (CRITICAL)
+trash_limit_per_crit = 1; // trash alarm limit percentage (CRITICAL)
 briefcase_limit_per = 10; // briefcase alarm limit percentage
 briefcase_limit_per_crit = 5; // briefcase alarm limit percentage (CRITICAL)
 drafts_limit_per = 10; // drafts items limit percentage
@@ -285,7 +285,7 @@ function(result) {
 	}
 	else if (result.getResponse().FolderActionResponse != null)
 	{
-		appCtxt.setStatusMsg('Acción realizada con éxito');
+		appCtxt.setStatusMsg(ACTION_SUCCESSFUL);
 	}
 	else if (result.getResponse().GetAccountInfoResponse != null)
 	{
@@ -504,6 +504,8 @@ function(result) {
 		var initialData = "<strong>" + SUGGESTIONS_TITLE + "</strong><br>";
 		// CRITICAL WARNING
 		if (quotaIsCritical) initialData += "<br><strong style='color: red'>" + CRITICAL_WARNING + "</strong><br><br>";
+		// DEFAULT SUGGESTION
+		initialData += DEFAULT_SUGGESTIONS[Math.floor(Math.random()*3)] + "<br><br>";
 		// TRASH LIMIT WARNING
 		var tl = quotaIsCritical ? trash_limit_per_crit : trash_limit_per
 		if (trash_per >= tl)

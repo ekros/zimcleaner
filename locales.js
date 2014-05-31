@@ -52,6 +52,9 @@ function initLocales(locale_config)
         OTHER = "Other";
         RELOAD_BUTTON = "Analyse again";
         DONATE_INFO = "Did you find this software useful?";
+        ACTION_SUCCESSFUL = "Action finished successfully";
+        // consejos predeterminados
+        DEFAULT_SUGGESTIONS = ["Organize your mails in folders. It will be easier to clean your mailbox in the future.", "Delete unnecessary emails after reading them in order to avoid accumulation.", "Exported files can be recovered in Preferences > Import/Export."];
         // dialogs
         CLEAN_TRASH_CONFIRM = "This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?";
         CLEAN_SPAM_CONFIRM = "This will remove the spam folder contents. Are you sure to continue?";
@@ -98,6 +101,9 @@ function initLocales(locale_config)
         OTHER = "Otros";
         RELOAD_BUTTON = "Volver a ejecutar análisis";
         DONATE_INFO = "Encontraste útil este software?";
+        ACTION_SUCCESSFUL = "Acción realizada con éxito";
+        // consejos predeterminados
+        DEFAULT_SUGGESTIONS = ["Ordena tus correos en carpetas. Te será más sencillo hacer limpieza cuando necesites espacio.", "Elimina los mensajes no necesarios en cuanto los leas, así evitarás que se acumulen.", "Los archivos exportados pueden ser recuperados desde Preferencias > Importar/Exportar."];
         // dialogos
         CLEAN_TRASH_CONFIRM = "Todos los contenidos de la papelera, includos los correos, contactos, eventos de calendario y documentos del maletín serán eliminados. ¿Desea continuar?";
         CLEAN_SPAM_CONFIRM = "Todos los contenidos de la carpeta de Correo no deseado serán eliminados. ¿Desea continuar?";
