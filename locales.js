@@ -59,6 +59,7 @@ function initLocales(locale_config)
         TRASH_STATUS_MSG = "Trash emails";
         OLDEST_STATUS_MSG = "Messages ordered by date (oldest first)";
         HEAVIEST_STATUS_MSG = "Messages ordered by size (heaviest first)";
+        DONATE_INFO = "Do you found this zimlet useful?";
         // dialogs
         CLEAN_TRASH_CONFIRM = "This will remove all the trash contents, including emails, contacts, appointments and briefcase documents. Are you sure to continue?";
         CLEAN_SPAM_CONFIRM = "This will remove the spam folder contents. Are you sure to continue?";
@@ -117,6 +118,7 @@ function initLocales(locale_config)
         TRASH_STATUS_MSG = "Correos en la papelera";
         OLDEST_STATUS_MSG = "Mensajes ordenados por fecha (más viejos primeros)";
         HEAVIEST_STATUS_MSG = "Mensajes ordenados por tamaño (más pesados primero)";
+        DONATE_INFO = "¿Encontraste útil este zimlet?";
         // dialogos
         CLEAN_TRASH_CONFIRM = "Todos los contenidos de la papelera, includos los correos, contactos, eventos de calendario y documentos del maletín serán eliminados. ¿Desea continuar?";
         CLEAN_SPAM_CONFIRM = "Todos los contenidos de la carpeta de Correo no deseado serán eliminados. ¿Desea continuar?";
