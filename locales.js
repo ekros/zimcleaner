@@ -136,4 +136,8 @@ function initLocales(locale_config)
         "Vacíe el contenido de la papelera regularmente", 
         "Intente clasificar todo el correo entrante que pueda y eliminar los que no vaya a necesitar."];
     }
+    else 
+    {
+        initLocales(locale);
+    }
 }
