@@ -136,6 +136,65 @@ function initLocales(locale_config)
         "Vacíe el contenido de la papelera regularmente", 
         "Intente clasificar todo el correo entrante que pueda y eliminar los que no vaya a necesitar."];
     }
+    else if (locale_config.indexOf("de") > -1) // de-DE
+    {
+        HEAVIEST_WARNING = "Die Nachrichten mit den größten Anhängen belegen den meisten Speicher";
+        SHOW_BUTTON = "Zeigen";
+        CLEAN_BUTTON = "Aufräumen";
+        EXPORT_AND_TAG_BUTTON = "Exportieren und mit Tag versehen";
+        HEAVIEST_EXPORT_AND_TAG_TOOLTIP = "Herunterladen der 20 größten E-Mails und markieren. Nach dem Download können Sie die markierten E-Mails löschen.";
+        OLDEST_WARNING = "Die ältesten Nachrichten belegen den meisten Speicher";
+        OLDEST_EXPORT_AND_TAG_TOOLTIP = "Herunterladen der 1000 ältesten Nachrichten und markieren. Nach dem Download können Sie die markierten E-Mails löschen.";
+        UNREAD_WARNING = "Sie haben zu viele ungelesene Nachrichten";
+        UNREAD_ADVICE = "Lösung: Überprüfen Sie die ungelesenen Nachrichten<br>Sie können Filter benutzen um eingehende E-Mails automatisch zu verarbeiten. Siehe Einstellungen > Filter";
+        CRITICAL_WARNING = "Der E-Mail Speicher ist fast voll.";
+        CLICK_ON_TAB = "Klicken Sie auf den ZimCleaner Reiter um mehr zu erfahren.";
+        TAG_NOTIFICATION = "Nachrichten erfolgreich getagt. Download wird vorbereitet...";
+        SUGGESTIONS_TITLE = "Vorschläge";
+        TRASH_WARNING = "Der Papierkorb belegt zu viel Speicher";
+        SHOW_MESSAGES_BUTTON = "Zeige (Nachrichten)";
+        SHOW_BRIEFCASE_BUTTON = "Zeige (Dateien)";
+        SPAM_WARNING = "Der Spam belegt zu viel Speicher";
+        DRAFT_WARNING = "Die Entwürfe belegen zu viel Speicher";
+        BRIEFCASE_WARNING = "Ihre Dateien belegen zu viel Speicher";
+        USER_QUOTA_TITLE = "Belegter Speicher";
+        OF = "von";
+        SPACE_USAGE = "Speicher belegt";
+        USED_SPACE_DETAILS = "Benutzter Speicher";
+        CLIC_TO_SEE_MORE_LABEL = "Klicken Sie auf einen Ordner um die Details zu sehen";
+        INBOX = "Posteingang";
+        TRASH = "Papierkorb";
+        DRAFTS = "Entwürfe";
+        SENT = "Gesendet";
+        SPAM = "Spam";
+        BRIEFCASE = "Dateien";
+        OTHER = "Sonstiger";
+        RELOAD_BUTTON = "Nochmal analysieren";
+        BRIEFCASE_STATUS_MSG = "Dateien sortiert nach Größe";
+        DRAFTS_STATUS_MSG = "Entwürfe nach Datum sortiert";
+        SPAM_STATUS_MSG = "Spam Ordner enthält";
+        TRASH_BRIEFCASE_STATUS_MSG = "Dateien im Papierkorb";
+        TRASH_STATUS_MSG = "Gelöschte E-Mails";
+        OLDEST_STATUS_MSG = "Nachrichten nach Datum sortieren (Älteste zuerst)";
+        HEAVIEST_STATUS_MSG = "Nachrichten nach Größe sortieren (Größte zuerst)";
+        DONATE_INFO = "Finden Sie dieses Zimlet hilfreich?";
+        // dialogs
+        CLEAN_TRASH_CONFIRM = "Hiermit leeren Sie alle Papierkörbe von E-Mails, sowie den Kontakten, Kalender und Dateien. Sind Sie sicher?";
+        CLEAN_SPAM_CONFIRM = "Hiermit löschen Sie alle Nachrichten aus dem Spam Ordner. Sind Sie sicher?";
+        CLEAN_DRAFTS_CONFIRM = "Hiermit löschen Sie alle Nachrichten aus dem Entwürfe Ordner. Sind Sie sicher?";
+        EXPORT_AND_TAG_CONFIRM = "Hiermit werden alle Nachrichten als eine komprimierte Datei heruntergeladen. Diese Datei können Sie sichern (und ggf. wieder über Einstellungen > Importieren/Exportieren wieder importieren). Die heruntergeladenen E-Mails werden getagt, Sie können die E-Mails danach löschen. Wollen Sie fortfahren?";
+        // tags
+        HEAVIEST_MESSAGES_TAG = "größte-Nachrichten-";
+        OLDEST_MESSAGES_TAG = "älteste-Nachrichten-";
+        // button titles
+        SHOW_HEAVIEST_TITLE = "Zeige Nachrichten, sortiert nach Größe";
+        SHOW_OLDEST_TITLE = "Zeige alte Nachrichten, sortiert nach Datum";
+        // random default suggestion
+        DEFAULT_SUGGESTIONS = ["Wenn Sie mit dem ZimCleaner nicht genug Speicher frei bekommen haben, können Sie unter Einstellung > Importieren/Exportieren auch ganze E-Mail Ordner herunterladen.", 
+        "Sie können E-Mails in ZIP oder TGZ Format exportieren. Diese exportierte Datei beinhaltet EML Dateien, welche mit E-Mail Programme wie Thunderbird oder Outlook geöffnet werden können. Sie können diese auch über Einstellungen > Importieren/Exportieren wiederherstellen.",
+        "Entleeren Sie regelmäßig Ihren Papierkorb",
+        "Klassifizieren Sie alle eingehenden Nachrichten im Unterordner und löschen Sie E-Mails die Sie nicht mehr benötigen."];
+    }
     else 
     {
         initLocales(locale);
