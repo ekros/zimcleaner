@@ -197,46 +197,46 @@ function initLocales(locale_config)
     }
     else if (locale_config.indexOf("pt-BR") > -1)  // Brazilian Portuguese
     {
-        HEAVIEST_WARNING = "Há muitas mensagens grandes ocupando grande volume de espaço";
+        HEAVIEST_WARNING = "Existem mensagens grandes ocupando muito espaço";
         SHOW_BUTTON = "Mostrar";
         CLEAN_BUTTON = "Limpar";
         EXPORT_AND_TAG_BUTTON = "Exportar e marcar";
-        HEAVIEST_EXPORT_AND_TAG_TOOLTIP = "Fazer o download e marcar as 20 maiores mensagens. Depois que o download finalizar você pode apagar as mensagens marcadas";
-        OLDEST_WARNING = "Há muitas mensagens antigas ocupando grande volume de espaço";
-        OLDEST_EXPORT_AND_TAG_TOOLTIP = "Fazer o download e marcar as 1000 mensagens mais antigas. Depois que o download finalizar você pode apagar as mensagens marcadas";
+        HEAVIEST_EXPORT_AND_TAG_TOOLTIP = "Fazer o download e marcar as 20 maiores mensagens. Depois que o download finalizar você pode apagar todas as mensagens marcadas";
+        OLDEST_WARNING = "Existem mensagens antigas ocupando muito espaço";
+        OLDEST_EXPORT_AND_TAG_TOOLTIP = "Fazer o download e marcar as 1000 mensagens mais antigas. Depois que o download finalizar você pode apagar todas as mensagens marcadas";
         UNREAD_WARNING = "Você possui muitas mensagens não lidas";
         UNREAD_ADVICE = "Solução: Marque as mensagens não lidas<br>Você pode criar filtros para lidar automaticamente com as mensagens recebidas. Clique em Prefêrencias > Filtros";
         CRITICAL_WARNING = "Sua cota de email está quase cheia.";
-        CLICK_ON_TAB = "Clique na aba Zimcleaner para conheçar mais sobre sua caixa.";
+        CLICK_ON_TAB = "Clique na aba Zimcleaner para conheçar mais sobre a utilização de sua cota.";
         TAG_NOTIFICATION = "Items marcados com sucesso. Preparando o download...";
         SUGGESTIONS_TITLE = "Sugestões";
-        TRASH_WARNING = "Sua lixeira está ocupando um grande volume de espaço";
+        TRASH_WARNING = "Sua lixeira está ocupando muito espaço";
         SHOW_MESSAGES_BUTTON = "Mostrar (mensagens)";
-        SHOW_BRIEFCASE_BUTTON = "Mostrar (briefcase)";
-        SPAM_WARNING = "Sua caixa de spam está ocupando um grande volume de espaço";
-        DRAFT_WARNING = "Sua caixa de rascunhos está ocupando um grande volume de espaço";
-        BRIEFCASE_WARNING = "Sua briefcase está ocupando um grande volume de espaço";
-        USER_QUOTA_TITLE = "Cota do(a) usuário(a)";
+        SHOW_BRIEFCASE_BUTTON = "Mostrar (porta-arquivos)";
+        SPAM_WARNING = "Sua caixa de spam está ocupando muito espaço";
+        DRAFT_WARNING = "Sua caixa de rascunhos está ocupando muito espaço";
+        BRIEFCASE_WARNING = "Seu porta-arquivo está ocupando muito espaço";
+        USER_QUOTA_TITLE = "Cota utilizada: ";
         OF = "de";
-        SPACE_USAGE = "espaço utilizado";
-        USED_SPACE_DETAILS = "Detalhes do estaço utilizado";
-        CLIC_TO_SEE_MORE_LABEL = "Clique em um elemento para mostrar mais detalhes";
+        SPACE_USAGE = " - espaço utilizado: ";
+        USED_SPACE_DETAILS = "Espaço utilizado";
+        CLIC_TO_SEE_MORE_LABEL = "Clique em uma pasta para mostrar mais detalhes";
         INBOX = "Entrada";
         TRASH = "Lixeira";
         DRAFTS = "Rascunhos";
         SENT = "Enviados";
         SPAM = "Spam";
-        BRIEFCASE = "Briefcase";
+        BRIEFCASE = "Porta-Arquivos";
         OTHER = "Outros";
         RELOAD_BUTTON = "Analisar novamente";
-        BRIEFCASE_STATUS_MSG = "Arquivos da Briefcase ordenados por tamanho";
+        BRIEFCASE_STATUS_MSG = "Arquivos do Porta-Arquivo ordenados por tamanho";
         DRAFTS_STATUS_MSG = "Rascunhos ordenados por data";
         SPAM_STATUS_MSG = "Conteúdos da pasta de Spam";
         TRASH_BRIEFCASE_STATUS_MSG = "Arquivos da Briefcase na lixeira";
         TRASH_STATUS_MSG = "Emails da Lixeira";
         OLDEST_STATUS_MSG = "Mensagens ordenadas por data (Mais antigas)";
         HEAVIEST_STATUS_MSG = "Mensagens ordenadas por tamanho (Maiores)";
-        DONATE_INFO = "Você este zimlet útil?";
+        DONATE_INFO = "Você achou este zimlet útil?";
         // dialogs
         CLEAN_TRASH_CONFIRM = "Isto vai remover todos os items da lixeira, incluindo emails, contatos, agendamentos e documentos da briefcase. Deseja continuar?";
         CLEAN_SPAM_CONFIRM = "Isto vai remover todos os items da pasta Spam. Deseja continuar?";
@@ -259,3 +259,4 @@ function initLocales(locale_config)
         initLocales(locale);
     }
 }
+man 
