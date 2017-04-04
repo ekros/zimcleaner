@@ -195,8 +195,68 @@ function initLocales(locale_config)
         "Entleeren Sie regelmäßig Ihren Papierkorb",
         "Klassifizieren Sie alle eingehenden Nachrichten im Unterordner und löschen Sie E-Mails die Sie nicht mehr benötigen."];
     }
+    else if (locale_config.indexOf("pt-BR") > -1)  // Brazilian Portuguese
+    {
+        HEAVIEST_WARNING = "Existem mensagens grandes ocupando muito espaço";
+        SHOW_BUTTON = "Mostrar";
+        CLEAN_BUTTON = "Limpar";
+        EXPORT_AND_TAG_BUTTON = "Exportar e marcar";
+        HEAVIEST_EXPORT_AND_TAG_TOOLTIP = "Fazer o download e marcar as 20 maiores mensagens. Depois que o download finalizar você pode apagar todas as mensagens marcadas";
+        OLDEST_WARNING = "Existem mensagens antigas ocupando muito espaço";
+        OLDEST_EXPORT_AND_TAG_TOOLTIP = "Fazer o download e marcar as 1000 mensagens mais antigas. Depois que o download finalizar você pode apagar todas as mensagens marcadas";
+        UNREAD_WARNING = "Você possui muitas mensagens não lidas";
+        UNREAD_ADVICE = "Solução: Marque as mensagens não lidas<br>Você pode criar filtros para lidar automaticamente com as mensagens recebidas. Clique em Prefêrencias > Filtros";
+        CRITICAL_WARNING = "Sua cota de email está quase cheia.";
+        CLICK_ON_TAB = "Clique na aba Zimcleaner para conheçar mais sobre a utilização de sua cota.";
+        TAG_NOTIFICATION = "Items marcados com sucesso. Preparando o download...";
+        SUGGESTIONS_TITLE = "Sugestões";
+        TRASH_WARNING = "Sua lixeira está ocupando muito espaço";
+        SHOW_MESSAGES_BUTTON = "Mostrar (mensagens)";
+        SHOW_BRIEFCASE_BUTTON = "Mostrar (porta-arquivos)";
+        SPAM_WARNING = "Sua caixa de spam está ocupando muito espaço";
+        DRAFT_WARNING = "Sua caixa de rascunhos está ocupando muito espaço";
+        BRIEFCASE_WARNING = "Seu porta-arquivo está ocupando muito espaço";
+        USER_QUOTA_TITLE = "Cota utilizada: ";
+        OF = "de";
+        SPACE_USAGE = " - espaço utilizado: ";
+        USED_SPACE_DETAILS = "Espaço utilizado";
+        CLIC_TO_SEE_MORE_LABEL = "Clique em uma pasta para mostrar mais detalhes";
+        INBOX = "Entrada";
+        TRASH = "Lixeira";
+        DRAFTS = "Rascunhos";
+        SENT = "Enviados";
+        SPAM = "Spam";
+        BRIEFCASE = "Porta-Arquivos";
+        OTHER = "Outros";
+        RELOAD_BUTTON = "Analisar novamente";
+        BRIEFCASE_STATUS_MSG = "Arquivos do Porta-Arquivo ordenados por tamanho";
+        DRAFTS_STATUS_MSG = "Rascunhos ordenados por data";
+        SPAM_STATUS_MSG = "Conteúdos da pasta de Spam";
+        TRASH_BRIEFCASE_STATUS_MSG = "Arquivos da Briefcase na lixeira";
+        TRASH_STATUS_MSG = "Emails da Lixeira";
+        OLDEST_STATUS_MSG = "Mensagens ordenadas por data (Mais antigas)";
+        HEAVIEST_STATUS_MSG = "Mensagens ordenadas por tamanho (Maiores)";
+        DONATE_INFO = "Você achou este zimlet útil?";
+        // dialogs
+        CLEAN_TRASH_CONFIRM = "Isto vai remover todos os items da lixeira, incluindo emails, contatos, agendamentos e documentos da briefcase. Deseja continuar?";
+        CLEAN_SPAM_CONFIRM = "Isto vai remover todos os items da pasta Spam. Deseja continuar?";
+        CLEAN_DRAFTS_CONFIRM = "Isto vai remover todos os items da pasta Rascunhos. Deseja continuar?";
+        EXPORT_AND_TAG_CONFIRM = "Esta ação vai realizar o download de um arquivo compactado o qual você poderá salvar como um backup (Futuramente pode ser importado em Preferências > Importar/Exportar). O emails compactados serão marcados. Você pode apagar os emails marcados quando o download finalizar. Deseja continuar?";
+        // tags
+        HEAVIEST_MESSAGES_TAG = "maiores-mensagens-";
+        OLDEST_MESSAGES_TAG = "antigas-mensagens-";
+        // button titles
+        SHOW_HEAVIEST_TITLE = "Mostrar mensagens por tamanho";
+        SHOW_OLDEST_TITLE = "Mostrar mensagens antigas";
+        // random default suggestion
+        DEFAULT_SUGGESTIONS = ["Se não for liberado espaço suficiente utilizando o ZimCleaner pode ser realizado o download em Preferências > Importar/Exportar.", 
+        "Você pode exportar emails em formato ZIP ou TGZ. As mensagens exportadas possuem arquivos EML que podem ser visualizados em clientes de email tais como Thunderbird ou Outlook. As mensagens exportas podem ser re-importadas em Preferências > Importar/Exportar.",
+        "Remova os arquivos da lixeira regularmente", 
+        "Classifique todas as mensagens recebidas em sub-pastas e remova mensagens que não são mais necessárias ou repetidas.."];
+    } 
     else 
     {
         initLocales(locale);
     }
 }
+man 
